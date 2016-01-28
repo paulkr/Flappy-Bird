@@ -32,9 +32,6 @@ public class FlappyBird extends JFrame {
 
 		FlappyBird frame = new FlappyBird();
 
-
-		System.out.println(game.spacePressed());
-
 	}
 
 }

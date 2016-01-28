@@ -1,3 +1,9 @@
+/**
+ * GamePanel.java
+ * 
+ * 
+ */
+
 
 import java.awt.*;
 import java.awt.event.*;
@@ -33,7 +39,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	public boolean spacePressed () {
 		return keys[32] = true;
-	} 
+	}
 
 }
 

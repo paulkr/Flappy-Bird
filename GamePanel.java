@@ -15,29 +15,30 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	public GamePanel (FlappyBird fb) {
 		mainFrame = fb;
-		keys = new boolean[KeyEvent.KEY_LAST + 1];
+		keys = new boolean[256];
 		addKeyListener(this);
 	}
 
 	public void addNotify() {
 		super.addNotify();
 		requestFocus();
+		mainFrame.start();
 	}
 
-	public void keyTyped(KeyEvent e) {}
+	public void move () {
+		if (keys[KeyEvent.VK_SPACE]) {
+			System.out.println("SPACE PRESSED");
+		}
+	}
+
+	public void keyTyped (KeyEvent e) {}
 
 	public void keyPressed (KeyEvent e) {
-		System.out.println(e.getKeyCode());
 		keys[e.getKeyCode()] = true;
 	}
 	
 	public void keyReleased (KeyEvent e) {
-		System.out.println(e.getKeyCode());
 		keys[e.getKeyCode()] = false;
-	}
-
-	public boolean spacePressed () {
-		return keys[32] = true;
 	}
 
 }

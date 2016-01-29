@@ -4,3 +4,11 @@
  *
  * @author  Paul Krishnamurthy
  */
+
+public class Bird {
+
+	public Bird () {
+		
+	}
+
+}

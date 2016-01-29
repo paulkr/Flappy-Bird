@@ -8,19 +8,17 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
-
+import java.util.Random;
 
 public class FlappyBird extends JFrame {
 
 	GamePanel game;
 
-	Sprites sp = new Sprites();
-
 	private static InputListener inListener;
 
 	private boolean spacePress;
 	
-	private Base base = new Base();
+	private Menu menu;
 
 
 	public FlappyBird () {
@@ -29,7 +27,9 @@ public class FlappyBird extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(375, 667);
 
-		add(base);
+		// For random background
+		boolean dark = new Random().nextBoolean();
+		add(new Menu(dark));
 
 		setResizable(false);
 		setVisible(true);
@@ -38,35 +38,20 @@ public class FlappyBird extends JFrame {
 
 	}
 
-	@Override
-	public void paint (Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		g2d.drawImage(sp.backgrounds[0], 0, 0, null);
-
-		// Moving base effect
-		// g2d.drawImage(sp.base, baseX1, 521, null);
-		// g2d.drawImage(sp.base, baseX2, 521, null);
-
-	}
-
 	public void run () {
+
 		while (true) {
+
+			// Try to sleep
 			try {
 				Thread.sleep(30);
-			}
-			catch (Exception e) {}
+			} catch (Exception e) {}
 
-			// Movements the bases
-			base.move();
-
-			// Drawing
-
-			repaint();
-			base.draw();
-
+			// Menu screen
+			menu.moveBase();
+			menu.draw();
 		}
+
 	}
 
 
@@ -74,10 +59,7 @@ public class FlappyBird extends JFrame {
 
 		FlappyBird game = new FlappyBird();
 
-		// game.add(base);
-
 		game.run();
-
 
 	}
 

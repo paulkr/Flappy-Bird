@@ -19,18 +19,24 @@ public class Sprites {
 	public static BufferedImage spriteSheet   = null;
 
 	public static BufferedImage[] backgrounds = new BufferedImage[2];
-	public static BufferedImage[] texts       = new BufferedImage[27];
 	public static BufferedImage[] pipes       = new BufferedImage[2];
+	public static BufferedImage[] yellowBird  = new BufferedImage[3];
+	public static BufferedImage[] blueBird    = new BufferedImage[3];
+	public static BufferedImage[] redBird     = new BufferedImage[3];
 
 	public static BufferedImage base,
 								scoreCard,
 								instructions,
 								playButton,
 								leaderboard,
-								newHighscore;
+								rateButton,
+								newHighscore,
+								titleText;
 
 
 	public Sprites () {
+
+		// Try to load sprite sheet, exit program if cannot
 
 		try {
 			spriteSheet = ImageIO.read(new File("resources/img/spriteSheet.png"));
@@ -41,31 +47,27 @@ public class Sprites {
 			return;
 		}
 
-		// Cut up sprites
-
+		// Backgrounds
 		backgrounds[0] = resize(spriteSheet.getSubimage(0, 0, 144, 256));
 		backgrounds[1] = resize(spriteSheet.getSubimage(146, 0, 144, 256));
 
+		// Pipes
 		for (int i = 56; i < 2; i++) {
 			pipes[i] = resize(spriteSheet.getSubimage(i * 28, 323, 26, 160));
 		}
 
-		base = resize(spriteSheet.getSubimage(292, 0, 168, 56));
-		scoreCard = resize(spriteSheet.getSubimage(3, 259, 113, 57));
+		// Birds
+		
+
+		// Other assets
+		base         = resize(spriteSheet.getSubimage(292, 0, 168, 56));
+		scoreCard    = resize(spriteSheet.getSubimage(3, 259, 113, 57));
 		instructions = resize(spriteSheet.getSubimage(292, 91, 57, 49));
-		playButton = resize(spriteSheet.getSubimage(354, 118, 52, 29));
-		leaderboard = resize(spriteSheet.getSubimage(414, 118, 52, 29));
+		playButton   = resize(spriteSheet.getSubimage(354, 118, 52, 29));
+		leaderboard  = resize(spriteSheet.getSubimage(414, 118, 52, 29));
+		rateButton   = resize(spriteSheet.getSubimage(465, 1, 31, 18));
 		newHighscore = resize(spriteSheet.getSubimage(112, 501, 16, 7));
-
-
-
-		// Test code to save file to check if it was cut properly
-		// try {
-		// 	File outputfile = new File("saved.png");
-		// 	ImageIO.write(pipes[0], "png", outputfile);
-		// } catch (IOException e) {
-		// 	System.out.println("akjshdkajhsdk");
-		// }
+		titleText    = resize(spriteSheet.getSubimage(351, 91, 89, 24));
 
 	}
 

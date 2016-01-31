@@ -57,17 +57,27 @@ public class Sprites {
 		}
 
 		// Birds
+		yellowBird[0] = resize(spriteSheet.getSubimage(31, 491, 17, 12));
+		yellowBird[1] = resize(spriteSheet.getSubimage(59, 491, 17, 12));
+		yellowBird[2] = resize(spriteSheet.getSubimage(3, 491, 17, 12));
 		
-
+		blueBird[0]   = resize(spriteSheet.getSubimage(115, 329, 17, 12));
+		blueBird[1]   = resize(spriteSheet.getSubimage(115, 355, 17, 12));
+		blueBird[2]   = resize(spriteSheet.getSubimage(115, 491, 17, 12));
+		
+		redBird[0]    = resize(spriteSheet.getSubimage(115, 407, 17, 12));
+		redBird[1]    = resize(spriteSheet.getSubimage(115, 433, 17, 12));
+		redBird[2]    = resize(spriteSheet.getSubimage(115, 381, 14, 12));
+		
 		// Other assets
-		base         = resize(spriteSheet.getSubimage(292, 0, 168, 56));
-		scoreCard    = resize(spriteSheet.getSubimage(3, 259, 113, 57));
-		instructions = resize(spriteSheet.getSubimage(292, 91, 57, 49));
-		playButton   = resize(spriteSheet.getSubimage(354, 118, 52, 29));
-		leaderboard  = resize(spriteSheet.getSubimage(414, 118, 52, 29));
-		rateButton   = resize(spriteSheet.getSubimage(465, 1, 31, 18));
-		newHighscore = resize(spriteSheet.getSubimage(112, 501, 16, 7));
-		titleText    = resize(spriteSheet.getSubimage(351, 91, 89, 24));
+		base          = resize(spriteSheet.getSubimage(292, 0, 168, 56));
+		scoreCard     = resize(spriteSheet.getSubimage(3, 259, 113, 57));
+		instructions  = resize(spriteSheet.getSubimage(292, 91, 57, 49));
+		playButton    = resize(spriteSheet.getSubimage(354, 118, 52, 29));
+		leaderboard   = resize(spriteSheet.getSubimage(414, 118, 52, 29));
+		rateButton    = resize(spriteSheet.getSubimage(465, 1, 31, 18));
+		newHighscore  = resize(spriteSheet.getSubimage(112, 501, 16, 7));
+		titleText     = resize(spriteSheet.getSubimage(351, 91, 89, 24));
 
 	}
 

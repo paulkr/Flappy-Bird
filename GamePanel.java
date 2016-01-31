@@ -7,39 +7,39 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.Random;
 
-public class GamePanel extends JPanel implements KeyListener {
+public class GamePanel extends JPanel {
 
-	private FlappyBird mainFrame;
-	private boolean[] keys;
+	Random rand = new Random();
 
-	public GamePanel (FlappyBird fb) {
-		mainFrame = fb;
-		keys = new boolean[256];
-		addKeyListener(this);
+	private Menu menu;
+	private Bird bird;
+
+	public GamePanel () {
+
+		// For random background and bird
+		boolean dark = rand.nextBoolean();
+		String[] birds = new String[] {
+			"yellow",
+			"blue",
+			"red"
+		};
+		String randomBird = birds[rand.nextInt(3)];
+
+		menu = new Menu(dark, randomBird);
+		bird = new Bird(randomBird);
+
 	}
 
-	public void addNotify() {
-		super.addNotify();
-		requestFocus();
-		mainFrame.start();
-	}
+	@Override
+    public void paint (Graphics g) {
+        super.paintComponent(g);
 
-	public void move () {
-		if (keys[KeyEvent.VK_SPACE]) {
-			System.out.println("SPACE PRESSED");
-		}
-	}
-
-	public void keyTyped (KeyEvent e) {}
-
-	public void keyPressed (KeyEvent e) {
-		keys[e.getKeyCode()] = true;
-	}
-	
-	public void keyReleased (KeyEvent e) {
-		keys[e.getKeyCode()] = false;
-	}
+	 	menu.moveBase();
+		menu.draw(g);
+		bird.draw(g);        
+    }
 
 }
 

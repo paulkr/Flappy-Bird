@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
+
 public class Menu extends JPanel {
 
 	// Load images before painting
@@ -13,12 +14,16 @@ public class Menu extends JPanel {
 
 	// FlappyBird fonts
 	Font flappyFontBase, 
-		flappyFontReal, 
-		flappyMiniFont = null;
+		 flappyFontReal, 
+		 flappyMiniFont = null;
 
 	boolean darkTheme;
+	String randomBird;
+	int baseSpeed = 5;
 
-	public Menu (boolean bg) {
+	public int[] xCoords = {0, 435};
+
+	public Menu (boolean background, String selectedBird) {
 
 		// Try to load ttf file
 		try {
@@ -36,27 +41,21 @@ public class Menu extends JPanel {
 		    System.exit(-1);
 		}
 
-		darkTheme = bg;
-
+		darkTheme  = background;
+		randomBird = selectedBird;
+		System.out.println(randomBird);
 	}
-
-
-	public int[] xCoords = {0, 435};
 
 
 	/**
 	 * Moves the x-coordinate of the base
 	 */
 	public void moveBase () {
-		xCoords[0] = xCoords[0] - 5 < -434 ? 430 : xCoords[0] - 5;
-		xCoords[1] = xCoords[1] - 5 < -434 ? 430 : xCoords[1] - 5;
+		xCoords[0] = xCoords[0] - baseSpeed < -434 ? 430 : xCoords[0] - baseSpeed;
+		xCoords[1] = xCoords[1] - baseSpeed < -434 ? 430 : xCoords[1] - baseSpeed;
 	}
 
-
-	@Override
-	public void paintComponent (Graphics g2d) {
-		super.paintComponent(g2d);
-
+	public void draw(Graphics g2d) {
 		// Set font and color
 		g2d.setFont(flappyFontReal);
 		g2d.setColor(Color.white);
@@ -80,11 +79,6 @@ public class Menu extends JPanel {
 		g2d.drawString("Created by Paul Krishnamurthy", 27, 600);
 		g2d.setFont(flappyMiniFont); // Change font
 		g2d.drawString("www.PaulKr.com", 115, 630);
-
-	}
-
-	public void draw () {
-		this.repaint();
 	}
 
 }

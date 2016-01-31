@@ -8,7 +8,6 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
-import java.util.Random;
 
 public class FlappyBird extends JFrame {
 
@@ -17,9 +16,6 @@ public class FlappyBird extends JFrame {
 	private static InputListener inListener;
 
 	private boolean spacePress;
-	
-	private Menu menu;
-
 
 	public FlappyBird () {
 
@@ -27,9 +23,8 @@ public class FlappyBird extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(375, 667);
 
-		// For random background
-		boolean dark = new Random().nextBoolean();
-		add(new Menu(dark));
+		game = new GamePanel();
+		add(game);
 
 		setResizable(false);
 		setVisible(true);
@@ -48,8 +43,9 @@ public class FlappyBird extends JFrame {
 			} catch (Exception e) {}
 
 			// Menu screen
-			menu.moveBase();
-			menu.draw();
+			
+
+			game.repaint();
 		}
 
 	}

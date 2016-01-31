@@ -51,9 +51,9 @@ public class Menu extends JPanel {
 	 * Moves the x-coordinate of the base
 	 */
 	public void moveBase () {
-		xCoords[0] = xCoords[0] - baseSpeed < -434 ? 430 : xCoords[0] - baseSpeed;
-		xCoords[1] = xCoords[1] - baseSpeed < -434 ? 430 : xCoords[1] - baseSpeed;
-	}
+		xCoords[0] = xCoords[0] - baseSpeed < -435 ? 435 : xCoords[0] - baseSpeed;
+		xCoords[1] = xCoords[1] - baseSpeed < -435 ? 435 : xCoords[1] - baseSpeed;
+	}//437
 
 	public void draw(Graphics g2d) {
 		// Set font and color

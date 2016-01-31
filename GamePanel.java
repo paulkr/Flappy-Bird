@@ -11,10 +11,11 @@ import java.util.Random;
 
 public class GamePanel extends JPanel {
 
-	Random rand = new Random();
+	private Random rand = new Random();
 
 	private Menu menu;
 	private Bird bird;
+	public boolean ready = false;
 
 	public GamePanel () {
 
@@ -31,6 +32,11 @@ public class GamePanel extends JPanel {
 		bird = new Bird(randomBird);
 
 	}
+
+	public void addNotify() {
+        super.addNotify();
+        ready = true;
+    }
 
 	@Override
     public void paint (Graphics g) {

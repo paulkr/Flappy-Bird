@@ -10,16 +10,16 @@ import java.io.FileInputStream;
 public class Menu extends JPanel {
 
 	// Load images before painting
-	Sprites sp = new Sprites();
+	private Sprites sp = new Sprites();
 
 	// FlappyBird fonts
-	Font flappyFontBase, 
-		 flappyFontReal, 
-		 flappyMiniFont = null;
+	private Font flappyFontBase, 
+				 flappyFontReal, 
+				 flappyMiniFont = null;
 
-	boolean darkTheme;
-	String randomBird;
-	int baseSpeed = 5;
+	private boolean darkTheme;
+	private String randomBird;
+	public int baseSpeed = 2;
 
 	public int[] xCoords = {0, 435};
 

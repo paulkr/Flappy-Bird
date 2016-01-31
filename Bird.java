@@ -11,7 +11,7 @@ import javax.swing.*;
 
 public class Bird extends JPanel {
 
-	Sprites sp = new Sprites();
+	private Sprites sp = new Sprites();
 	String color;
 
 	public Bird (String color) {

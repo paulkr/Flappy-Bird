@@ -7,13 +7,14 @@
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-public class FlappyBird extends JFrame {
+public class FlappyBird extends JFrame implements ActionListener {
 
 	GamePanel game;
+	Timer gameTimer;
 
-	private static InputListener inListener;
+	// private static InputListener inListener;
 
 	private boolean spacePress;
 
@@ -23,39 +24,29 @@ public class FlappyBird extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(375, 667);
 
+		gameTimer = new Timer(10, this);
+		gameTimer.start();
+
 		game = new GamePanel();
 		add(game);
 
 		setResizable(false);
 		setVisible(true);
 
-		inListener = InputListener.getInstance();	
+		// inListener = InputListener.getInstance();	
 
 	}
 
-	public void run () {
-
-		while (true) {
-
-			// Try to sleep
-			try {
-				Thread.sleep(30);
-			} catch (Exception e) {}
-
-			// Menu screen
-			
-
+	public void actionPerformed (ActionEvent e) {
+		if (game!= null && game.ready) {
 			game.repaint();
-		}
-
+		}			
 	}
 
 
 	public static void main(String[] args) {
 
 		FlappyBird game = new FlappyBird();
-
-		game.run();
 
 	}
 

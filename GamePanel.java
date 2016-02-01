@@ -91,6 +91,16 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
         ready = true;
     }
 
+    /**
+     * Checks if point is in rectangle
+     * 
+     * @param      r     Rectangle
+     * @return           Boolean if point collides with rectangle
+     */
+    private boolean isTouching (Rectangle r) {
+    	return r.contains(clickedPoint);
+    }
+
 	@Override
     public void paintComponent (Graphics g) {
         super.paintComponent(g);
@@ -102,9 +112,15 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				menuDrawing(g);
 				birdDrawing(g, bird.getColor());
 
-				// if (imageBounds.contains(clickedPoint)) {
-				// 	System.out.println("CLICKED PLAY BUTTON");
-				// }
+				if (isTouching(textures.get("playButton").getRect())) {
+					System.out.println("CLICKED PLAY BUTTON");
+				} else if (isTouching(textures.get("leaderboard").getRect())) {
+					System.out.println("CLICKED LEADERBOARD BUTTON");
+				} else if (isTouching(textures.get("rateButton").getRect())) {
+					System.out.println("CLICKED RATE BUTTON");
+				} 
+
+
 
 				break;
 
@@ -122,7 +138,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
     // Drawing from different components
 
-    public void menuDrawing (Graphics g2d) {
+    private void menuDrawing (Graphics g2d) {
 
     	// Set font and color
 		g2d.setFont(flappyFontReal);
@@ -151,7 +167,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
     }
 
-    public void birdDrawing (Graphics g2d, String color) {
+    private void birdDrawing (Graphics g2d, String color) {
 
     	switch (color) {
 			case "yellow":

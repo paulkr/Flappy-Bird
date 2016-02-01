@@ -34,36 +34,36 @@ public class Sprites {
 			return;
 		}
 
-		textures.put("background1", new Texture(resize(spriteSheet.getSubimage(0, 0, 144, 256)),   0, 0, 144, 256));
-		textures.put("background2", new Texture(resize(spriteSheet.getSubimage(146, 0, 144, 256)), 146, 0, 144, 256));
+		textures.put("background1", new Texture(resize(spriteSheet.getSubimage(0, 0, 144, 256)),   0, 0));
+		textures.put("background2", new Texture(resize(spriteSheet.getSubimage(146, 0, 144, 256)), 0, 0));
 
 		// Pipes
 		for (int i = 56; i < 2; i++) {
-			textures.put("background" + (i + 1), new Texture(resize(spriteSheet.getSubimage(i * 28, 323, 26, 160)), i * 28, 323, 26, 160));
+			textures.put("pipe" + (i + 1), new Texture(resize(spriteSheet.getSubimage(i * 28, 323, 26, 160)), 10000, 10000));
 		}
 
 		// Birds
-		textures.put("yellowBird1", new Texture(resize(spriteSheet.getSubimage(31, 491, 17, 12)), 31, 491, 17, 12));
-		textures.put("yellowBird2", new Texture(resize(spriteSheet.getSubimage(59, 491, 17, 12)), 59, 491, 17, 12));
-		textures.put("yellowBird3", new Texture(resize(spriteSheet.getSubimage(3, 491, 17, 12)),  3, 491, 17, 12));
+		textures.put("yellowBird1", new Texture(resize(spriteSheet.getSubimage(31, 491, 17, 12)), 172, 250));
+		textures.put("yellowBird2", new Texture(resize(spriteSheet.getSubimage(59, 491, 17, 12)), 172, 250));
+		textures.put("yellowBird3", new Texture(resize(spriteSheet.getSubimage(3, 491, 17, 12)),  172, 250));
 
-		textures.put("blueBird1",   new Texture(resize(spriteSheet.getSubimage(115, 329, 17, 12)), 115, 329, 17, 12));
-		textures.put("blueBird2",   new Texture(resize(spriteSheet.getSubimage(115, 355, 17, 12)), 115, 355, 17, 12));
-		textures.put("blueBird3",   new Texture(resize(spriteSheet.getSubimage(115, 491, 17, 12)), 115, 491, 17, 12));
+		textures.put("blueBird1",   new Texture(resize(spriteSheet.getSubimage(115, 329, 17, 12)), 172, 250));
+		textures.put("blueBird2",   new Texture(resize(spriteSheet.getSubimage(115, 355, 17, 12)), 172, 250));
+		textures.put("blueBird3",   new Texture(resize(spriteSheet.getSubimage(115, 491, 17, 12)), 172, 250));
 
-		textures.put("redBird1",    new Texture(resize(spriteSheet.getSubimage(115, 407, 17, 12)), 115, 407, 17, 12));
-		textures.put("redBird2",    new Texture(resize(spriteSheet.getSubimage(115, 433, 17, 12)), 115, 433, 17, 12));
-		textures.put("redBird3",    new Texture(resize(spriteSheet.getSubimage(115, 381, 14, 12)), 115, 381, 14, 12));
+		textures.put("redBird1",    new Texture(resize(spriteSheet.getSubimage(115, 407, 17, 12)), 172, 250));
+		textures.put("redBird2",    new Texture(resize(spriteSheet.getSubimage(115, 433, 17, 12)), 172, 250));
+		textures.put("redBird3",    new Texture(resize(spriteSheet.getSubimage(115, 381, 14, 12)), 172, 250));
 
 		// Other assets
-		textures.put("base",         new Texture(resize(spriteSheet.getSubimage(292, 0, 168, 56)),  292, 0, 168, 56));
-		textures.put("scoreCard",    new Texture(resize(spriteSheet.getSubimage(3, 259, 113, 57)),  3, 259, 113, 57));
-		textures.put("instructions", new Texture(resize(spriteSheet.getSubimage(292, 91, 57, 49)),  292, 91, 57, 49));
-		textures.put("playButton",   new Texture(resize(spriteSheet.getSubimage(354, 118, 52, 29)), 354, 118, 52, 29));
-		textures.put("leaderboard",  new Texture(resize(spriteSheet.getSubimage(414, 118, 52, 29)), 414, 118, 52, 29));
-		textures.put("rateButton",   new Texture(resize(spriteSheet.getSubimage(465, 1, 31, 18)),   465, 1, 31, 18));
-		textures.put("newHighscore", new Texture(resize(spriteSheet.getSubimage(112, 501, 16, 7)),  112, 501, 16, 7));
-		textures.put("titleText",    new Texture(resize(spriteSheet.getSubimage(351, 91, 89, 24)),  351, 91, 89, 24));
+		textures.put("base",         new Texture(resize(spriteSheet.getSubimage(292, 0, 168, 56)),  0, 0));
+		textures.put("scoreCard",    new Texture(resize(spriteSheet.getSubimage(3, 259, 113, 57)),  3, 259));
+		textures.put("instructions", new Texture(resize(spriteSheet.getSubimage(292, 91, 57, 49)),  292, 91));
+		textures.put("playButton",   new Texture(resize(spriteSheet.getSubimage(354, 118, 52, 29)), 34, 448));
+		textures.put("leaderboard",  new Texture(resize(spriteSheet.getSubimage(414, 118, 52, 29)), 203, 448));
+		textures.put("rateButton",   new Texture(resize(spriteSheet.getSubimage(465, 1, 31, 18)),   147, 355));
+		textures.put("newHighscore", new Texture(resize(spriteSheet.getSubimage(112, 501, 16, 7)),  112, 501));
+		textures.put("titleText",    new Texture(resize(spriteSheet.getSubimage(351, 91, 89, 24)),  72, 100));
 
 	}
 

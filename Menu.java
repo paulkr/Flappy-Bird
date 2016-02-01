@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 
 public class Menu extends JPanel {
 
-	public static int baseSpeed = 2;
+	public static int baseSpeed = 1;
 	public static int[] xCoords = {0, 435};
 
 	/**

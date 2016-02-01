@@ -10,29 +10,16 @@ import java.io.IOException;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.util.HashMap;
 
 public class Sprites {
 
 	// Resize factor to match frame size
-	public static final double RESIZE_FACTOR = 2.605;
+	private static final double RESIZE_FACTOR = 2.605;
 
-	public static BufferedImage spriteSheet   = null;
+	private static BufferedImage spriteSheet   = null;
 
-	public static BufferedImage[] backgrounds = new BufferedImage[2];
-	public static BufferedImage[] pipes       = new BufferedImage[2];
-	public static BufferedImage[] yellowBird  = new BufferedImage[3];
-	public static BufferedImage[] blueBird    = new BufferedImage[3];
-	public static BufferedImage[] redBird     = new BufferedImage[3];
-
-	public static BufferedImage base,
-								scoreCard,
-								instructions,
-								playButton,
-								leaderboard,
-								rateButton,
-								newHighscore,
-								titleText;
-
+	private static HashMap<String, Texture> textures = new HashMap<String, Texture>();
 
 	public Sprites () {
 
@@ -47,37 +34,36 @@ public class Sprites {
 			return;
 		}
 
-		// Backgrounds
-		backgrounds[0] = resize(spriteSheet.getSubimage(0, 0, 144, 256));
-		backgrounds[1] = resize(spriteSheet.getSubimage(146, 0, 144, 256));
+		textures.put("background1", new Texture(resize(spriteSheet.getSubimage(0, 0, 144, 256)),   0, 0, 144, 256));
+		textures.put("background2", new Texture(resize(spriteSheet.getSubimage(146, 0, 144, 256)), 146, 0, 144, 256));
 
 		// Pipes
 		for (int i = 56; i < 2; i++) {
-			pipes[i] = resize(spriteSheet.getSubimage(i * 28, 323, 26, 160));
+			textures.put("background" + (i + 1), new Texture(resize(spriteSheet.getSubimage(i * 28, 323, 26, 160)), i * 28, 323, 26, 160));
 		}
 
 		// Birds
-		yellowBird[0] = resize(spriteSheet.getSubimage(31, 491, 17, 12));
-		yellowBird[1] = resize(spriteSheet.getSubimage(59, 491, 17, 12));
-		yellowBird[2] = resize(spriteSheet.getSubimage(3, 491, 17, 12));
-		
-		blueBird[0]   = resize(spriteSheet.getSubimage(115, 329, 17, 12));
-		blueBird[1]   = resize(spriteSheet.getSubimage(115, 355, 17, 12));
-		blueBird[2]   = resize(spriteSheet.getSubimage(115, 491, 17, 12));
-		
-		redBird[0]    = resize(spriteSheet.getSubimage(115, 407, 17, 12));
-		redBird[1]    = resize(spriteSheet.getSubimage(115, 433, 17, 12));
-		redBird[2]    = resize(spriteSheet.getSubimage(115, 381, 14, 12));
-		
+		textures.put("yellowBird1", new Texture(resize(spriteSheet.getSubimage(31, 491, 17, 12)), 31, 491, 17, 12));
+		textures.put("yellowBird2", new Texture(resize(spriteSheet.getSubimage(59, 491, 17, 12)), 59, 491, 17, 12));
+		textures.put("yellowBird3", new Texture(resize(spriteSheet.getSubimage(3, 491, 17, 12)),  3, 491, 17, 12));
+
+		textures.put("blueBird1",   new Texture(resize(spriteSheet.getSubimage(115, 329, 17, 12)), 115, 329, 17, 12));
+		textures.put("blueBird2",   new Texture(resize(spriteSheet.getSubimage(115, 355, 17, 12)), 115, 355, 17, 12));
+		textures.put("blueBird3",   new Texture(resize(spriteSheet.getSubimage(115, 491, 17, 12)), 115, 491, 17, 12));
+
+		textures.put("redBird1",    new Texture(resize(spriteSheet.getSubimage(115, 407, 17, 12)), 115, 407, 17, 12));
+		textures.put("redBird2",    new Texture(resize(spriteSheet.getSubimage(115, 433, 17, 12)), 115, 433, 17, 12));
+		textures.put("redBird3",    new Texture(resize(spriteSheet.getSubimage(115, 381, 14, 12)), 115, 381, 14, 12));
+
 		// Other assets
-		base          = resize(spriteSheet.getSubimage(292, 0, 168, 56));
-		scoreCard     = resize(spriteSheet.getSubimage(3, 259, 113, 57));
-		instructions  = resize(spriteSheet.getSubimage(292, 91, 57, 49));
-		playButton    = resize(spriteSheet.getSubimage(354, 118, 52, 29));
-		leaderboard   = resize(spriteSheet.getSubimage(414, 118, 52, 29));
-		rateButton    = resize(spriteSheet.getSubimage(465, 1, 31, 18));
-		newHighscore  = resize(spriteSheet.getSubimage(112, 501, 16, 7));
-		titleText     = resize(spriteSheet.getSubimage(351, 91, 89, 24));
+		textures.put("base",         new Texture(resize(spriteSheet.getSubimage(292, 0, 168, 56)),  292, 0, 168, 56));
+		textures.put("scoreCard",    new Texture(resize(spriteSheet.getSubimage(3, 259, 113, 57)),  3, 259, 113, 57));
+		textures.put("instructions", new Texture(resize(spriteSheet.getSubimage(292, 91, 57, 49)),  292, 91, 57, 49));
+		textures.put("playButton",   new Texture(resize(spriteSheet.getSubimage(354, 118, 52, 29)), 354, 118, 52, 29));
+		textures.put("leaderboard",  new Texture(resize(spriteSheet.getSubimage(414, 118, 52, 29)), 414, 118, 52, 29));
+		textures.put("rateButton",   new Texture(resize(spriteSheet.getSubimage(465, 1, 31, 18)),   465, 1, 31, 18));
+		textures.put("newHighscore", new Texture(resize(spriteSheet.getSubimage(112, 501, 16, 7)),  112, 501, 16, 7));
+		textures.put("titleText",    new Texture(resize(spriteSheet.getSubimage(351, 91, 89, 24)),  351, 91, 89, 24));
 
 	}
 
@@ -87,7 +73,7 @@ public class Sprites {
 	 * @param  image     BufferedImage object
 	 * @return           New resized image
 	 */
-	public static BufferedImage resize (BufferedImage image) {
+	private static BufferedImage resize (BufferedImage image) {
 
 		int newWidth = (int) (image.getWidth() * RESIZE_FACTOR);
 		int newHeight = (int) (image.getHeight() * RESIZE_FACTOR);
@@ -98,6 +84,15 @@ public class Sprites {
 	    g.dispose();
 
 	    return resizedImage;
+	}
+
+	/**
+	 * Public getter for Textures HashMap
+	 * 
+	 * @return     Texture
+	 */
+	public HashMap<String, Texture> getGameTextures () {
+		return textures;
 	}
 
 }

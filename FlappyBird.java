@@ -14,8 +14,6 @@ public class FlappyBird extends JFrame implements ActionListener {
 	GamePanel game;
 	Timer gameTimer;
 
-	// private static InputListener inListener;
-
 	private boolean spacePress;
 
 	public FlappyBird () {
@@ -31,16 +29,14 @@ public class FlappyBird extends JFrame implements ActionListener {
 		add(game);
 
 		setResizable(false);
-		setVisible(true);
-
-		// inListener = InputListener.getInstance();	
+		setVisible(true);	
 
 	}
 
 	public void actionPerformed (ActionEvent e) {
-		if (game!= null && game.ready) {
+		if (game != null && game.ready) {
 			game.repaint();
-		}			
+		}
 	}
 
 

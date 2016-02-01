@@ -17,7 +17,7 @@ public class Sprites {
 	// Resize factor to match frame size
 	private static final double RESIZE_FACTOR = 2.605;
 
-	private static BufferedImage spriteSheet   = null;
+	private static BufferedImage spriteSheet = null;
 
 	private static HashMap<String, Texture> textures = new HashMap<String, Texture>();
 

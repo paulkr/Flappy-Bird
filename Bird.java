@@ -13,6 +13,13 @@ public class Bird extends JPanel {
 	public int x, y;
 
 	private int FLOAT_MULTIPLIER = -1;
+	private final int BIRD_HEIGHT = 31;
+	private final int BASE_COLLISION = 521 - BIRD_HEIGHT;
+
+	private double velocity = 0;
+	private double gravity = .4;
+	private double delay = 0;
+	private final int SHIFT = 10;
 
 	public Bird (String color, int x, int y) {
 		this.color = color;
@@ -35,4 +42,39 @@ public class Bird extends JPanel {
 
 	}
 
+	public void jump () {
+
+        if (delay < 1) {
+            velocity = -SHIFT;
+            delay = SHIFT;
+        }
+
+	}
+
+	public void rotate () {
+		
+	}
+
+	private void die () {
+		System.out.println("BIRD IS DEAD :(");
+		System.exit(-1);
+	}
+
+	public void inGame () {
+
+		if (y < BASE_COLLISION) {
+
+			velocity += gravity;
+
+			if (delay > 0) {
+				delay--;
+			}
+
+			y += (int) velocity;
+
+		} else {
+			die();
+		}
+
+	}
 }

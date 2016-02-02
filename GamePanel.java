@@ -44,8 +44,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private String randomBird;
 
 	// Moving base effect
-	public static int baseSpeed = 1;
-	public static int[] baseCoords = {0, 435};
+	private static int baseSpeed = 1;
+	private static int[] baseCoords = {0, 435};
 
 
 	public GamePanel () {
@@ -141,7 +141,10 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				break;
 
 			case GAME:
-				System.out.println("GAME");
+				// System.out.println("GAME");
+
+				drawBird(g);
+				menuBird.inGame();
 
 				break;
 
@@ -266,6 +269,13 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 					case KeyEvent.VK_L:
 						System.out.println("L PRESSED");
 						gameState = LEADERBOARD;
+						break;
+				}
+			case GAME:
+				switch (keyCode) {
+					case KeyEvent.VK_SPACE:
+						System.out.println("SPACE IN GAME PRESSED");
+						menuBird.jump();
 						break;
 				}
 		}

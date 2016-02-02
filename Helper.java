@@ -1,4 +1,6 @@
-
+/**
+ * Helper class with various tools
+ */
 
 import java.awt.Desktop;
 import java.net.URI;

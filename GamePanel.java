@@ -24,26 +24,29 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private Random rand = new Random();
 	private Calendar cal;
 
+	// Fonts
+	private Font flappyFontBase, 
+				 flappyFontReal, 
+				 flappyMiniFont = null;
+
+	// Textures
+	private HashMap<String, Texture> textures = new Sprites().getGameTextures();
+
+	public boolean ready = false; // If game is loaded
+	private int gameState = MENU; // Game state
+	private boolean keys[] = new boolean[256]; // Keys
+
+
 	private Menu menu;
 	private Bird menuBird;
 	private Point clickedPoint;
 	private boolean darkTheme;
 	private String randomBird;
 
-	public boolean ready = false;
+	// Moving base effect
+	public static int baseSpeed = 1;
+	public static int[] baseCoords = {0, 435};
 
-	// Fonts
-	private Font flappyFontBase, 
-				 flappyFontReal, 
-				 flappyMiniFont = null;
-
-	// Game state
-	int gameState = MENU;
-
-	boolean keys[] = new boolean[256];
-
-	// Get all the game textures
-	private HashMap<String, Texture> textures = new Sprites().getGameTextures();
 
 	public GamePanel () {
 
@@ -57,12 +60,14 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			flappyMiniFont = flappyFontReal.deriveFont(Font.PLAIN, 15);
 
 		} catch (Exception ex) {
+
 			// Exit is font cannot be loaded
 			ex.printStackTrace();
 			System.err.println("Could not load Flappy Font!");
 			System.exit(-1);
 		}
 
+		// Stores Point object when mouse is clicked
 		clickedPoint = new Point(-1, -1);
 
 		// Get current hour with Calendar
@@ -82,7 +87,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		darkTheme = dark;
 		randomBird = birds[rand.nextInt(3)];
 
-		// menu = new Menu();
 		menuBird = new Bird(randomBird, 172, 250);
 
 		// Set all keys to false
@@ -90,9 +94,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			keys[i] = false;
 		}
 
+		// Input listeners
 		addKeyListener(this);
 		addMouseListener(this);
-
 	}
 
 	public void addNotify() {
@@ -115,15 +119,20 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	public void paintComponent (Graphics g) {
 		super.paintComponent(g);
 
+		// Move base
+		baseCoords[0] = baseCoords[0] - baseSpeed < -435 ? 435 : baseCoords[0] - baseSpeed;
+		baseCoords[1] = baseCoords[1] - baseSpeed < -435 ? 435 : baseCoords[1] - baseSpeed;
+
+		// Paint constant items
+		constantItems(g);
+
 		switch (gameState) {
 
 			case MENU:
-				Menu.moveBase();
-				menuDrawing(g);
+				drawMenu(g);
 
 				menuBird.menuFloat();
-				birdDrawing(g);
-
+				drawBird(g);
 
 				break;
 
@@ -133,23 +142,41 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 			case GAME:
 				System.out.println("GAME");
+
 				break;
 
 		}
 
 	}
 
-	// Drawing from different components
+	// All game drawing methods
 
-	private void menuDrawing (Graphics g2d) {
-
-		// Set font and color
-		g2d.setFont(flappyFontReal);
-		g2d.setColor(Color.white);
+	/**
+	 * Draws items that stay no matter what the scene is
+	 * 
+	 * @param g2d     Graphics object
+	 */
+	public void constantItems (Graphics g2d) {
 
 		// Background
 		g2d.drawImage(darkTheme ? textures.get("background2").getImage() : 
 			textures.get("background1").getImage(), 0, 0, null);
+
+		// Moving base effect
+		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], 521, null);
+		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], 521, null);
+
+	}
+
+	////////////////
+	// Menuscreen //
+	////////////////
+
+	private void drawMenu (Graphics g2d) {
+
+		// Set font and color
+		g2d.setFont(flappyFontReal);
+		g2d.setColor(Color.white);
 
 		// Title
 		g2d.drawImage(textures.get("titleText").getImage(), 72, 100, null);
@@ -159,10 +186,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		g2d.drawImage(textures.get("leaderboard").getImage(), 203, 448, null);
 		g2d.drawImage(textures.get("rateButton").getImage(), 147, 355, null);
 
-		// Moving base effect
-		g2d.drawImage(textures.get("base").getImage(), Menu.xCoords[0], 521, null);
-		g2d.drawImage(textures.get("base").getImage(), Menu.xCoords[1], 521, null);
-
 		// Credits :p
 		g2d.drawString("Created by Paul Krishnamurthy", 27, 600);
 		g2d.setFont(flappyMiniFont); // Change font
@@ -170,7 +193,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	}
 
-	private void birdDrawing (Graphics g2d) {
+	private void drawBird (Graphics g2d) {
 
 		switch (menuBird.color) {
 			case "yellow":
@@ -203,15 +226,28 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				menuBird.x, menuBird.y, .09);
 				break;
 		}
+	}
+
+	/////////////////
+	// Game screen //
+	/////////////////
+
+	public void drawGame (Graphics g2d) {
+
 
 	}
 
 
 
+	//////////////////////
+	// Keyboard actions //
+	//////////////////////
+
 	public void keyTyped (KeyEvent e) {}
 	public void keyReleased (KeyEvent e) {}
 
 	public void keyPressed (KeyEvent e) {
+
 		int keyCode = e.getKeyCode();
 
 		keys[keyCode] = true;
@@ -235,13 +271,16 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		}
 	}
 
+	///////////////////
+	// Mouse actions //
+	///////////////////
+
 	public void mouseExited (MouseEvent e) {}
 	public void mouseEntered (MouseEvent e) {}
 	public void mouseReleased (MouseEvent e) {}
 	public void mouseClicked (MouseEvent e) {}
 
 	public void mousePressed (MouseEvent e) {
-		System.out.println("YOU PRESSED");
 
 		clickedPoint = e.getPoint();
 

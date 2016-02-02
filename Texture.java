@@ -22,10 +22,6 @@ public class Texture {
 		return image;
 	}
 
-	public Rectangle getRect () {
-		return rect;
-	}
-
 	public int getX () {
 		return x;
 	}
@@ -40,6 +36,10 @@ public class Texture {
 
 	public int getHeight () {
 		return height;
+	}
+
+	public Rectangle getRect () {
+		return rect;
 	}
 
 }

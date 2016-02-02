@@ -9,15 +9,30 @@ import javax.swing.JPanel;
 
 public class Bird extends JPanel {
 
-	private String color;
-	private int x, y;
+	public String color;
+	public int x, y;
 
-	public Bird (String color) {
+	private int FLOAT_MULTIPLIER = -1;
+
+	public Bird (String color, int x, int y) {
 		this.color = color;
+		this.x = x;
+		this.y = y;
 	}
 
-	public String getColor () {
-		return color;
+	/**
+	 * Floating bird effect on menu screen
+	 */
+	public void menuFloat () {
+
+		y += FLOAT_MULTIPLIER;
+
+		if (y < 220) {
+			FLOAT_MULTIPLIER *= -1;
+		} else if (y > 280) {
+			FLOAT_MULTIPLIER *= -1;
+		}
+
 	}
 
 }

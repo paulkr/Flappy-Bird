@@ -8,19 +8,24 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.awt.event.KeyEvent.*;
 import java.util.HashMap;
 import java.io.InputStream;
 import java.io.File;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.awt.image.BufferedImage;
+import java.util.Calendar;
 
 public class GamePanel extends JPanel implements Globals, KeyListener, MouseListener {
 
 	private Random rand = new Random();
+	private Calendar cal;
 
 	private Menu menu;
-	private Bird bird;
+	private Bird menuBird;
 	private Point clickedPoint;
 	private boolean darkTheme;
 	private String randomBird;
@@ -53,15 +58,20 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 		} catch (Exception ex) {
 			// Exit is font cannot be loaded
-		    ex.printStackTrace();
-		    System.err.println("Could not load Flappy Font!");
-		    System.exit(-1);
+			ex.printStackTrace();
+			System.err.println("Could not load Flappy Font!");
+			System.exit(-1);
 		}
 
 		clickedPoint = new Point(-1, -1);
 
-		// For random background and bird
-		boolean dark = rand.nextBoolean();
+		// Get current hour with Calendar
+		// If it is past noon, use the dark theme
+		cal = Calendar.getInstance();
+		int currentHour = cal.get(Calendar.HOUR_OF_DAY);
+
+		boolean dark = currentHour > 12;
+
 		String[] birds = new String[] {
 			"yellow",
 			"blue",
@@ -73,7 +83,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		randomBird = birds[rand.nextInt(3)];
 
 		// menu = new Menu();
-		bird = new Bird(randomBird);
+		menuBird = new Bird(randomBird, 172, 250);
 
 		// Set all keys to false
 		for (int i = 0; i < 256; i++) {
@@ -86,40 +96,33 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	}
 
 	public void addNotify() {
-        super.addNotify();
-        requestFocus();
-        ready = true;
-    }
+		super.addNotify();
+		requestFocus();
+		ready = true;
+	}
 
-    /**
-     * Checks if point is in rectangle
-     * 
-     * @param      r     Rectangle
-     * @return           Boolean if point collides with rectangle
-     */
-    private boolean isTouching (Rectangle r) {
-    	return r.contains(clickedPoint);
-    }
+	/**
+	 * Checks if point is in rectangle
+	 * 
+	 * @param      r     Rectangle
+	 * @return           Boolean if point collides with rectangle
+	 */
+	private boolean isTouching (Rectangle r) {
+		return r.contains(clickedPoint);
+	}
 
 	@Override
-    public void paintComponent (Graphics g) {
-        super.paintComponent(g);
+	public void paintComponent (Graphics g) {
+		super.paintComponent(g);
 
-        switch (gameState) {
+		switch (gameState) {
 
-        	case MENU:
-        		Menu.moveBase();
+			case MENU:
+				Menu.moveBase();
 				menuDrawing(g);
-				birdDrawing(g, bird.getColor());
 
-				if (isTouching(textures.get("playButton").getRect())) {
-					System.out.println("CLICKED PLAY BUTTON");
-				} else if (isTouching(textures.get("leaderboard").getRect())) {
-					System.out.println("CLICKED LEADERBOARD BUTTON");
-				} else if (isTouching(textures.get("rateButton").getRect())) {
-					System.out.println("CLICKED RATE BUTTON");
-				} 
-
+				menuBird.menuFloat();
+				birdDrawing(g);
 
 
 				break;
@@ -132,15 +135,15 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				System.out.println("GAME");
 				break;
 
-        }
+		}
 
-    }
+	}
 
-    // Drawing from different components
+	// Drawing from different components
 
-    private void menuDrawing (Graphics g2d) {
+	private void menuDrawing (Graphics g2d) {
 
-    	// Set font and color
+		// Set font and color
 		g2d.setFont(flappyFontReal);
 		g2d.setColor(Color.white);
 
@@ -165,51 +168,74 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		g2d.setFont(flappyMiniFont); // Change font
 		g2d.drawString("www.PaulKr.com", 115, 630);
 
-    }
+	}
 
-    private void birdDrawing (Graphics g2d, String color) {
+	private void birdDrawing (Graphics g2d) {
 
-    	switch (color) {
+		switch (menuBird.color) {
 			case "yellow":
-				g2d.drawImage(textures.get("yellowBird1").getImage(), 172, 250, null);
+				Animation.animate(g2d,
+				new BufferedImage[] {
+					textures.get("yellowBird1").getImage(),
+					textures.get("yellowBird2").getImage(), 
+					textures.get("yellowBird3").getImage()
+				},
+				menuBird.x, menuBird.y, .09);
+				break;
+
 			case "blue":
-				g2d.drawImage(textures.get("blueBird1").getImage(), 172, 250, null);
+				Animation.animate(g2d,
+				new BufferedImage[] {
+					textures.get("blueBird1").getImage(),
+					textures.get("blueBird2").getImage(), 
+					textures.get("blueBird3").getImage()
+				},
+				menuBird.x, menuBird.y, .09);
+				break;
+
 			case "red":
-				g2d.drawImage(textures.get("redBird1").getImage(), 172, 250, null);
+				Animation.animate(g2d,
+				new BufferedImage[] {
+					textures.get("redBird1").getImage(),
+					textures.get("redBird2").getImage(), 
+					textures.get("redBird3").getImage()
+				},
+				menuBird.x, menuBird.y, .09);
+				break;
 		}
 
-    }
+	}
 
 
 
-    public void keyTyped (KeyEvent e) {}
-    public void keyReleased (KeyEvent e) {}
+	public void keyTyped (KeyEvent e) {}
+	public void keyReleased (KeyEvent e) {}
 
-    public void keyPressed (KeyEvent e) {
-    	int keyCode = e.getKeyCode();
+	public void keyPressed (KeyEvent e) {
+		int keyCode = e.getKeyCode();
 
-    	keys[keyCode] = true;
+		keys[keyCode] = true;
 
-    	switch (gameState) {
-    		case MENU:
-    			switch (keyCode) {
-    				case KeyEvent.VK_SPACE:
-    					System.out.println("SPACE PRESSED");
-    					gameState = GAME;
-    					break;
-    				case KeyEvent.VK_ENTER:
-    					System.out.println("ENTER PRESSED");
-    					gameState = GAME;
-    					break;
-    				case KeyEvent.VK_L:
-    					System.out.println("L PRESSED");
-    					gameState = LEADERBOARD;
-    					break;
-    			}
-    	}
-    }
+		switch (gameState) {
+			case MENU:
+				switch (keyCode) {
+					case KeyEvent.VK_SPACE:
+						System.out.println("SPACE PRESSED");
+						gameState = GAME;
+						break;
+					case KeyEvent.VK_ENTER:
+						System.out.println("ENTER PRESSED");
+						gameState = GAME;
+						break;
+					case KeyEvent.VK_L:
+						System.out.println("L PRESSED");
+						gameState = LEADERBOARD;
+						break;
+				}
+		}
+	}
 
-    public void mouseExited (MouseEvent e) {}
+	public void mouseExited (MouseEvent e) {}
 	public void mouseEntered (MouseEvent e) {}
 	public void mouseReleased (MouseEvent e) {}
 	public void mouseClicked (MouseEvent e) {}
@@ -218,10 +244,20 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		System.out.println("YOU PRESSED");
 
 		clickedPoint = e.getPoint();
+
+		if (isTouching(textures.get("playButton").getRect())) {
+			System.out.println("CLICKED PLAY BUTTON");
+			gameState = GAME;
+
+		} else if (isTouching(textures.get("leaderboard").getRect())) {
+			System.out.println("CLICKED LEADERBOARD BUTTON");
+			gameState = LEADERBOARD;
+
+		} else if (isTouching(textures.get("rateButton").getRect())) {
+			Helper.openURL("http://paulkr.com");
+		}
+
 	}
-
-
-
 
 
 }

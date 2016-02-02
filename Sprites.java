@@ -49,11 +49,11 @@ public class Sprites {
 
 		textures.put("blueBird1",   new Texture(resize(spriteSheet.getSubimage(115, 329, 17, 12)), 172, 250));
 		textures.put("blueBird2",   new Texture(resize(spriteSheet.getSubimage(115, 355, 17, 12)), 172, 250));
-		textures.put("blueBird3",   new Texture(resize(spriteSheet.getSubimage(115, 491, 17, 12)), 172, 250));
+		textures.put("blueBird3",   new Texture(resize(spriteSheet.getSubimage(87, 491, 17, 12)), 172, 250));
 
 		textures.put("redBird1",    new Texture(resize(spriteSheet.getSubimage(115, 407, 17, 12)), 172, 250));
 		textures.put("redBird2",    new Texture(resize(spriteSheet.getSubimage(115, 433, 17, 12)), 172, 250));
-		textures.put("redBird3",    new Texture(resize(spriteSheet.getSubimage(115, 381, 14, 12)), 172, 250));
+		textures.put("redBird3",    new Texture(resize(spriteSheet.getSubimage(115, 381, 17, 12)), 172, 250));
 
 		// Other assets
 		textures.put("base",         new Texture(resize(spriteSheet.getSubimage(292, 0, 168, 56)),  0, 0));

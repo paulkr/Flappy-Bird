@@ -13,8 +13,10 @@ public class FlappyBird extends JFrame implements ActionListener {
 
 	GamePanel game;
 	Timer gameTimer;
+	Timer spritesTimer;
 
 	private boolean spacePress;
+	private final int DELAY = 10;
 
 	public FlappyBird () {
 
@@ -22,7 +24,7 @@ public class FlappyBird extends JFrame implements ActionListener {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(375, 667);
 
-		gameTimer = new Timer(10, this);
+		gameTimer = new Timer(DELAY, this);
 		gameTimer.start();
 
 		game = new GamePanel();

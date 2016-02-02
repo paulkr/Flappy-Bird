@@ -36,6 +36,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private int gameState = MENU; // Game state
 	private boolean keys[] = new boolean[256]; // Keys
 
+	private boolean inStartGameState = false;
+	private boolean spaceToStartPressed = false;
+
 
 	private Menu menu;
 	private Bird menuBird;
@@ -132,7 +135,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				drawMenu(g);
 
 				menuBird.menuFloat();
-				drawBird(g);
 
 				break;
 
@@ -141,10 +143,17 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				break;
 
 			case GAME:
-				// System.out.println("GAME");
+				
 
-				drawBird(g);
-				menuBird.inGame();
+				// Start at instructions state
+				if (inStartGameState) {
+					startGameScreen(g);
+
+				} else {
+					// Start game
+					drawBird(g);
+					menuBird.inGame();
+				}
 
 				break;
 
@@ -156,8 +165,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	/**
 	 * Draws items that stay no matter what the scene is
-	 * 
-	 * @param g2d     Graphics object
 	 */
 	public void constantItems (Graphics g2d) {
 
@@ -168,6 +175,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		// Moving base effect
 		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], 521, null);
 		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], 521, null);
+
+		// Draw bird
+		drawBird(g2d);
 
 	}
 
@@ -196,6 +206,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	}
 
+	/**
+	 * Draws bird
+	 */
 	private void drawBird (Graphics g2d) {
 
 		switch (menuBird.color) {
@@ -235,8 +248,12 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	// Game screen //
 	/////////////////
 
-	public void drawGame (Graphics g2d) {
+	public void startGameScreen (Graphics g2d) {
 
+		menuBird.x = 100;
+		menuBird.y = 100;
+
+		g2d.drawImage(textures.get("instructions").getImage(), 200, 200, null);
 
 	}
 
@@ -258,14 +275,14 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		switch (gameState) {
 			case MENU:
 				switch (keyCode) {
-					case KeyEvent.VK_SPACE:
-						System.out.println("SPACE PRESSED");
-						gameState = GAME;
-						break;
+
+					// Start game on 'enter'
 					case KeyEvent.VK_ENTER:
-						System.out.println("ENTER PRESSED");
 						gameState = GAME;
+						inStartGameState = true;
 						break;
+
+					// Open leaderboard on 'L'
 					case KeyEvent.VK_L:
 						System.out.println("L PRESSED");
 						gameState = LEADERBOARD;
@@ -274,8 +291,13 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			case GAME:
 				switch (keyCode) {
 					case KeyEvent.VK_SPACE:
-						System.out.println("SPACE IN GAME PRESSED");
-						menuBird.jump();
+						
+						if (inStartGameState) {
+							inStartGameState = false;
+						} else {
+							menuBird.jump();
+						}
+						
 						break;
 				}
 		}
@@ -294,17 +316,20 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 		clickedPoint = e.getPoint();
 
-		if (isTouching(textures.get("playButton").getRect())) {
-			System.out.println("CLICKED PLAY BUTTON");
-			gameState = GAME;
 
-		} else if (isTouching(textures.get("leaderboard").getRect())) {
-			System.out.println("CLICKED LEADERBOARD BUTTON");
-			gameState = LEADERBOARD;
+		if (gameState == MENU) {
+			if (isTouching(textures.get("playButton").getRect())) {
+				gameState = GAME;
+				inStartGameState = true;
 
-		} else if (isTouching(textures.get("rateButton").getRect())) {
-			Helper.openURL("http://paulkr.com");
-		}
+			} else if (isTouching(textures.get("leaderboard").getRect())) {
+				System.out.println("CLICKED LEADERBOARD BUTTON");
+				gameState = LEADERBOARD;
+
+			} else if (isTouching(textures.get("rateButton").getRect())) {
+				Helper.openURL("http://paulkr.com"); // Open website
+			}
+		} 
 
 	}
 

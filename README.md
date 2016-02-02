@@ -1,9 +1,7 @@
 Flappy-Bird
 ===========
 
-A flappy bird game clone written in Java.
+A flappy bird clone written in Java.
 
 
 TODO:
-- [ ] Sprites class
-- [ ] Input handler

@@ -1,5 +1,8 @@
 /**
+ * Helper.java
  * Helper class with various tools
+ *
+ * @author  Paul Krishnamurthy
  */
 
 import java.awt.Desktop;

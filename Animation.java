@@ -1,4 +1,9 @@
-
+/**
+ * Animation.java
+ * Creates animation with array of sprites
+ *
+ * @author  Paul Krishnamurthy
+ */
 
 import java.awt.Graphics;
 import java.util.ArrayList;

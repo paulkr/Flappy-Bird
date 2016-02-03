@@ -1,4 +1,9 @@
-
+/**
+ * Globals.java
+ * Stores all global variables
+ *
+ * @author  Paul Krishnamurthy
+ */
 
 public interface Globals {
 

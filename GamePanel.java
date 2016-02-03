@@ -1,7 +1,8 @@
 /**
  * GamePanel.java
- * 
- * 
+ * Main game panel
+ *
+ * @author  Paul Krishnamurthy
  */
 
 import java.awt.*;
@@ -37,7 +38,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private boolean keys[] = new boolean[256]; // Keys
 
 	private boolean inStartGameState = false;
-	private boolean spaceToStartPressed = false;
 
 
 	private Menu menu;
@@ -49,6 +49,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	// Moving base effect
 	private static int baseSpeed = 1;
 	private static int[] baseCoords = {0, 435};
+
+	private static Audio audio = new Audio();
 
 
 	public GamePanel () {
@@ -288,18 +290,23 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 						gameState = LEADERBOARD;
 						break;
 				}
+				break;
+
 			case GAME:
 				switch (keyCode) {
 					case KeyEvent.VK_SPACE:
-						
+
 						if (inStartGameState) {
 							inStartGameState = false;
-						} else {
-							menuBird.jump();
 						}
-						
+
+						// Jump and play audio even if in instructions state
+						menuBird.jump();
+						audio.jump();
+
 						break;
 				}
+				break;
 		}
 	}
 
@@ -315,7 +322,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	public void mousePressed (MouseEvent e) {
 
 		clickedPoint = e.getPoint();
-
 
 		if (gameState == MENU) {
 			if (isTouching(textures.get("playButton").getRect())) {

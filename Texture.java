@@ -1,4 +1,9 @@
-
+/**
+ * Texture.java
+ * Stores data for game textures
+ *
+ * @author  Paul Krishnamurthy
+ */
 
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;

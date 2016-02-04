@@ -6,6 +6,7 @@
  */
 
 import java.awt.Desktop;
+import java.awt.Graphics;
 import java.net.URI;
 
 public class Helper {

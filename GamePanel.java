@@ -33,24 +33,23 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	// Textures
 	private HashMap<String, Texture> textures = new Sprites().getGameTextures();
 
-	public boolean ready = false; // If game is loaded
-	private int gameState = MENU; // Game state
-	private boolean keys[] = new boolean[256]; // Keys
-
-	private boolean inStartGameState = false;
-
-
-	private Menu menu;
-	private Bird menuBird;
-	private Point clickedPoint;
-	private boolean darkTheme;
-	private String randomBird;
-
 	// Moving base effect
-	private static int baseSpeed = 1;
-	private static int[] baseCoords = {0, 435};
-
-	private static Audio audio = new Audio();
+	private static int baseSpeed      = 1;
+	private static int[] baseCoords   = {0, 435};
+	private static Audio audio        = new Audio();
+	
+	public boolean ready              = false;             // If game is loaded
+	private int gameState             = GAME;              // Game screen state
+	private boolean keys[]            = new boolean[256];  // Array of pressed keys
+	private boolean inStartGameState  = true;              // To show instructions scren
+	private Point clickedPoint        = new Point(-1, -1); // Store point when player clicks 
+	private int score                 = 0;                 // Current game score
+	
+	private final int STARTING_BIRD_X = 90;
+	private final int STARTING_BIRD_Y = 343;
+	private final Bird menuBird;
+	private final boolean darkTheme;
+	private final String randomBird;
 
 
 	public GamePanel () {
@@ -71,9 +70,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			System.err.println("Could not load Flappy Font!");
 			System.exit(-1);
 		}
-
-		// Stores Point object when mouse is clicked
-		clickedPoint = new Point(-1, -1);
 
 		// Get current hour with Calendar
 		// If it is past noon, use the dark theme
@@ -124,6 +120,10 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	public void paintComponent (Graphics g) {
 		super.paintComponent(g);
 
+		// Set font and color
+		g.setFont(flappyFontReal);
+		g.setColor(Color.white);
+
 		// Move base
 		baseCoords[0] = baseCoords[0] - baseSpeed < -435 ? 435 : baseCoords[0] - baseSpeed;
 		baseCoords[1] = baseCoords[1] - baseSpeed < -435 ? 435 : baseCoords[1] - baseSpeed;
@@ -146,6 +146,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 			case GAME:
 				
+				drawScore(); // Draw player score
 
 				// Start at instructions state
 				if (inStartGameState) {
@@ -165,6 +166,23 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	// All game drawing methods
 
+
+	/**
+	 * Draws a string centered based on given restrictions
+	 * 
+	 * @param s     String to be drawn
+	 * @param w     Constraining width
+	 * @param h     Constraining height
+	 * @param y     Fixed y-coordiate
+	 */
+	public void drawCentered (String s, int w, int h, int y, Graphics g) {
+		FontMetrics fm = g.getFontMetrics();
+
+		// Calculate x-coordinate based on string length and width
+		int x = (w - fm.stringWidth(s)) / 2;
+		g.drawString(s, x, y);
+	}
+
 	/**
 	 * Draws items that stay no matter what the scene is
 	 */
@@ -175,8 +193,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			textures.get("background1").getImage(), 0, 0, null);
 
 		// Moving base effect
-		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], 521, null);
-		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], 521, null);
+		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], textures.get("base").getY(), null);
+		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], textures.get("base").getY(), null);
 
 		// Draw bird
 		drawBird(g2d);
@@ -189,22 +207,26 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	private void drawMenu (Graphics g2d) {
 
-		// Set font and color
-		g2d.setFont(flappyFontReal);
-		g2d.setColor(Color.white);
-
 		// Title
-		g2d.drawImage(textures.get("titleText").getImage(), 72, 100, null);
+		g2d.drawImage(textures.get("titleText").getImage(), 
+			textures.get("titleText").getX(), 
+			textures.get("titleText").getY(), null);
 
 		// Buttons
-		g2d.drawImage(textures.get("playButton").getImage(), 34, 448, null);
-		g2d.drawImage(textures.get("leaderboard").getImage(), 203, 448, null);
-		g2d.drawImage(textures.get("rateButton").getImage(), 147, 355, null);
+		g2d.drawImage(textures.get("playButton").getImage(),
+			textures.get("playButton").getX(),
+			textures.get("playButton").getY(), null);
+		g2d.drawImage(textures.get("leaderboard").getImage(),
+			textures.get("leaderboard").getX(),
+			textures.get("leaderboard").getY(), null);
+		g2d.drawImage(textures.get("rateButton").getImage(),
+			textures.get("rateButton").getX(),
+			textures.get("rateButton").getY(), null);
 
 		// Credits :p
-		g2d.drawString("Created by Paul Krishnamurthy", 27, 600);
+		drawCentered("Created by Paul Krishnamurthy", 375, 667, 600, g2d);
 		g2d.setFont(flappyMiniFont); // Change font
-		g2d.drawString("www.PaulKr.com", 115, 630);
+		drawCentered("www.PaulKr.com", 375, 667, 630, g2d);
 
 	}
 
@@ -252,10 +274,18 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	public void startGameScreen (Graphics g2d) {
 
-		menuBird.x = 100;
-		menuBird.y = 100;
+		menuBird.x = STARTING_BIRD_X;
+		menuBird.y = STARTING_BIRD_Y;
 
-		g2d.drawImage(textures.get("instructions").getImage(), 200, 200, null);
+		// Get ready text
+		g2d.drawImage(textures.get("getReadyText").getImage(),
+			textures.get("getReadyText").getX(),
+			textures.get("getReadyText").getY(), null);
+
+		// Instructions image
+		g2d.drawImage(textures.get("instructions").getImage(), 
+			textures.get("instructions").getX(),
+			textures.get("instructions").getY(), null);
 
 	}
 
@@ -322,6 +352,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	public void mousePressed (MouseEvent e) {
 
 		clickedPoint = e.getPoint();
+
+		score ++; // testing
+		System.out.println(score);
 
 		if (gameState == MENU) {
 			if (isTouching(textures.get("playButton").getRect())) {

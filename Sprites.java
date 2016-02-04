@@ -56,15 +56,25 @@ public class Sprites {
 		textures.put("redBird3",    new Texture(resize(spriteSheet.getSubimage(115, 381, 17, 12)), 172, 250));
 
 		// Other assets
-		textures.put("base",         new Texture(resize(spriteSheet.getSubimage(292, 0, 168, 56)),  0, 0));
+		textures.put("base",         new Texture(resize(spriteSheet.getSubimage(292, 0, 168, 56)),  0, 521));
 		textures.put("scoreCard",    new Texture(resize(spriteSheet.getSubimage(3, 259, 113, 57)),  3, 259));
-		textures.put("instructions", new Texture(resize(spriteSheet.getSubimage(292, 91, 57, 49)),  292, 91));
 		textures.put("playButton",   new Texture(resize(spriteSheet.getSubimage(354, 118, 52, 29)), 34, 448));
 		textures.put("leaderboard",  new Texture(resize(spriteSheet.getSubimage(414, 118, 52, 29)), 203, 448));
 		textures.put("rateButton",   new Texture(resize(spriteSheet.getSubimage(465, 1, 31, 18)),   147, 355));
 		textures.put("newHighscore", new Texture(resize(spriteSheet.getSubimage(112, 501, 16, 7)),  112, 501));
 		textures.put("titleText",    new Texture(resize(spriteSheet.getSubimage(351, 91, 89, 24)),  72, 100));
 
+		textures.put("getReadyText", new Texture(resize(spriteSheet.getSubimage(295, 59, 92, 25)),  68, 180));
+		textures.put("instructions", new Texture(resize(spriteSheet.getSubimage(292, 91, 57, 49)),  113, 300));
+
+		// Add score images
+		textures.put("score-1",      new Texture(resize(spriteSheet.getSubimage(136, 455, 8, 18)),  0, 0));
+		for (int i = 0; i < 4; i++) {
+			textures.put("score-" + (i + 2), new Texture(resize(spriteSheet.getSubimage(292 + i, 160, 12, 19)), 0, 0));
+		}
+		for (int i = 0; i < 4; i++) {
+			textures.put("score-" + (i + 4), new Texture(resize(spriteSheet.getSubimage(292 + i, 184, 12, 19)), 0, 0));
+		}
 	}
 
 	/**

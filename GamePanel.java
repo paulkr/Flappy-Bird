@@ -20,6 +20,10 @@ import java.io.FileInputStream;
 import java.awt.image.BufferedImage;
 import java.util.Calendar;
 
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+
 public class GamePanel extends JPanel implements Globals, KeyListener, MouseListener {
 
 	private Random rand = new Random();
@@ -28,6 +32,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	// Fonts
 	private Font flappyFontBase, 
 				 flappyFontReal, 
+				 flappyScoreFont,
 				 flappyMiniFont = null;
 
 	// Textures
@@ -60,8 +65,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			flappyFontBase = Font.createFont(Font.TRUETYPE_FONT, is);
 
 			// Header and sub-header fonts
-			flappyFontReal = flappyFontBase.deriveFont(Font.PLAIN, 20);
-			flappyMiniFont = flappyFontReal.deriveFont(Font.PLAIN, 15);
+			flappyScoreFont = flappyFontBase.deriveFont(Font.PLAIN, 50);
+			flappyFontReal  = flappyFontBase.deriveFont(Font.PLAIN, 20);
+			flappyMiniFont  = flappyFontBase.deriveFont(Font.PLAIN, 15);
 
 		} catch (Exception ex) {
 
@@ -146,7 +152,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 			case GAME:
 				
-				drawScore(); // Draw player score
+				drawScore(g); // Draw player score
 
 				// Start at instructions state
 				if (inStartGameState) {
@@ -286,6 +292,37 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		g2d.drawImage(textures.get("instructions").getImage(), 
 			textures.get("instructions").getX(),
 			textures.get("instructions").getY(), null);
+
+	}
+
+	public void drawScore (Graphics g2d) {
+		// System.out.println(score);
+
+		// g2d.setFont(flappyScoreFont);
+		// g2d.drawString(score + "", 100, 100);
+
+		// Graphics2D g2 = (Graphics2D) g2d;
+
+		// FontRenderContext frc = g2.getFontRenderContext();
+		// TextLayout textTl = new TextLayout(score + "", flappyScoreFont, frc);
+		// AffineTransform transform = new AffineTransform();
+		// Shape outline = textTl.getOutline(null);
+		// Rectangle outlineBounds = outline.getBounds();
+		// transform = g2.getTransform();
+
+		// transform.translate(100, 100);
+
+		// g2.transform(transform);
+		// g2.setColor(Color.black);
+		// g2.draw(outline);
+		// g2.setClip(outline);
+	
+		char[] digits = ("" + score).toCharArray();
+		System.out.println(Arrays.toString(digits));
+		for (int i = 0; i < digits.length; i++) {
+			// System.out.println(digits[i]);
+			g2d.drawImage(textures.get("score-" + digits[i]).getImage(), 100 + i*);
+		}
 
 	}
 

@@ -38,9 +38,9 @@ public class Sprites {
 		textures.put("background2", new Texture(resize(spriteSheet.getSubimage(146, 0, 144, 256)), 0, 0));
 
 		// Pipes
-		for (int i = 56; i < 2; i++) {
-			textures.put("pipe" + (i + 1), new Texture(resize(spriteSheet.getSubimage(i * 28, 323, 26, 160)), 10000, 10000));
-		}
+		// for (int i = 56; i < 2; i++) {
+		// 	textures.put("pipe" + (i + 1), new Texture(resize(spriteSheet.getSubimage(i * 28, 323, 26, 160)), 10000, 10000));
+		// }
 
 		// Birds
 		textures.put("yellowBird1", new Texture(resize(spriteSheet.getSubimage(31, 491, 17, 12)), 172, 250));
@@ -68,12 +68,14 @@ public class Sprites {
 		textures.put("instructions", new Texture(resize(spriteSheet.getSubimage(292, 91, 57, 49)),  113, 300));
 
 		// Add score images
+		textures.put("score-0",      new Texture(resize(spriteSheet.getSubimage(496, 60, 12, 18)),   0, 0));
 		textures.put("score-1",      new Texture(resize(spriteSheet.getSubimage(136, 455, 8, 18)),  0, 0));
-		for (int i = 0; i < 4; i++) {
-			textures.put("score-" + (i + 2), new Texture(resize(spriteSheet.getSubimage(292 + i, 160, 12, 19)), 0, 0));
-		}
-		for (int i = 0; i < 4; i++) {
-			textures.put("score-" + (i + 4), new Texture(resize(spriteSheet.getSubimage(292 + i, 184, 12, 19)), 0, 0));
+		
+		int score = 2;
+		for (int i = 292; i < 335; i += 14) {
+			textures.put("score-" + score,       new Texture(resize(spriteSheet.getSubimage(i, 160, 12, 18)),  0, 0));
+			textures.put("score-" + (score + 4), new Texture(resize(spriteSheet.getSubimage(i, 184, 12, 18)),  0, 0));
+			score++;
 		}
 	}
 

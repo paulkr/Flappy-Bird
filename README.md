@@ -4,4 +4,10 @@ Flappy-Bird
 A flappy bird clone written in Java.
 
 
-TODO:
+Build & Run
+-----------
+
+```shell
+$ cd lib
+$ javac FlappyBird.java && java FlappyBird
+```

@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 		// Try to load ttf file
 		try {
-			InputStream is = new BufferedInputStream(new FileInputStream("resources/fonts/flappy-font.ttf"));
+			InputStream is = new BufferedInputStream(new FileInputStream("res/fonts/flappy-font.ttf"));
 			flappyFontBase = Font.createFont(Font.TRUETYPE_FONT, is);
 
 			// Header and sub-header fonts

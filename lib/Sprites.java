@@ -6,10 +6,10 @@
  */
 
 import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
 import java.io.IOException;
 import java.io.File;
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.util.HashMap;
 
 public class Sprites {
@@ -26,7 +26,7 @@ public class Sprites {
 		// Try to load sprite sheet, exit program if cannot
 
 		try {
-			spriteSheet = ImageIO.read(new File("resources/img/spriteSheet.png"));
+			spriteSheet = ImageIO.read(new File("res/img/spriteSheet.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Could not load sprite sheet.");

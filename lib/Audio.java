@@ -17,7 +17,7 @@ public class Audio {
 
 	private void playSound (String sound) {
 
-		String soundURL = "/resources/sound/" + sound + ".wav";
+		String soundURL = "res/sound/" + sound + ".wav";
 
 		try {
 		    audioInputStream = AudioSystem.getAudioInputStream(this.getClass().getResource(soundURL));

@@ -11,15 +11,16 @@ public class Bird extends JPanel {
 
 	public String color;
 	public int x, y;
-
-	private int FLOAT_MULTIPLIER = -1;
-	private final int BIRD_HEIGHT = 31;
+	
+	private int FLOAT_MULTIPLIER     = -1;
+	private final int BIRD_HEIGHT    = 31;
 	private final int BASE_COLLISION = 521 - BIRD_HEIGHT;
-
-	private double velocity = 0;
-	private double gravity = .4;
-	private double delay = 0;
-	private final int SHIFT = 10;
+	private final int SHIFT          = 10;
+	
+	private double velocity          = 0;
+	private double gravity           = .4;
+	private double delay             = 0;
+	private Audio audio              = new Audio();
 
 	public Bird (String color, int x, int y) {
 		this.color = color;
@@ -73,6 +74,7 @@ public class Bird extends JPanel {
 			y += (int) velocity;
 
 		} else {
+			audio.hit();
 			die();
 		}
 

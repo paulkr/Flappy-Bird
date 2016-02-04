@@ -50,6 +50,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private Point clickedPoint        = new Point(-1, -1); // Store point when player clicks 
 	private int score                 = 0;                 // Current game score
 	
+	private final int SCREEN_WIDTH    = 375;
+	private final int SCREEN_HEIGHT   = 667;
 	private final int STARTING_BIRD_X = 90;
 	private final int STARTING_BIRD_Y = 343;
 	private final Bird menuBird;
@@ -230,9 +232,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			textures.get("rateButton").getY(), null);
 
 		// Credits :p
-		drawCentered("Created by Paul Krishnamurthy", 375, 667, 600, g2d);
+		drawCentered("Created by Paul Krishnamurthy", SCREEN_WIDTH, SCREEN_HEIGHT, 600, g2d);
 		g2d.setFont(flappyMiniFont); // Change font
-		drawCentered("www.PaulKr.com", 375, 667, 630, g2d);
+		drawCentered("www.PaulKr.com", SCREEN_WIDTH, SCREEN_HEIGHT, 630, g2d);
 
 	}
 
@@ -295,33 +297,25 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	}
 
+	/**
+	 * Aligns and draws score using image textures
+	 */
 	public void drawScore (Graphics g2d) {
-		// System.out.println(score);
-
-		// g2d.setFont(flappyScoreFont);
-		// g2d.drawString(score + "", 100, 100);
-
-		// Graphics2D g2 = (Graphics2D) g2d;
-
-		// FontRenderContext frc = g2.getFontRenderContext();
-		// TextLayout textTl = new TextLayout(score + "", flappyScoreFont, frc);
-		// AffineTransform transform = new AffineTransform();
-		// Shape outline = textTl.getOutline(null);
-		// Rectangle outlineBounds = outline.getBounds();
-		// transform = g2.getTransform();
-
-		// transform.translate(100, 100);
-
-		// g2.transform(transform);
-		// g2.setColor(Color.black);
-		// g2.draw(outline);
-		// g2.setClip(outline);
 	
 		char[] digits = ("" + score).toCharArray();
-		System.out.println(Arrays.toString(digits));
-		for (int i = 0; i < digits.length; i++) {
-			// System.out.println(digits[i]);
-			g2d.drawImage(textures.get("score-" + digits[i]).getImage(), 100 + i*);
+		
+		int digitCount = digits.length;
+
+		int takeUp = 0;
+		for (char digit : digits) {
+			takeUp += digit == '1' ? 25 : 35;
+		}
+
+		int drawScoreX = SCREEN_WIDTH / 2 - takeUp / 2;
+
+		for (int i = 0; i < digitCount; i++) {
+			g2d.drawImage(textures.get("score-" + digits[i]).getImage(), drawScoreX, 60, null);
+			drawScoreX += digits[i] == '1' ? 25 : 35;
 		}
 
 	}
@@ -371,6 +365,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 						menuBird.jump();
 						audio.jump();
 
+						score ++; //testing
+
 						break;
 				}
 				break;
@@ -390,7 +386,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 		clickedPoint = e.getPoint();
 
-		score ++; // testing
 		System.out.println(score);
 
 		if (gameState == MENU) {

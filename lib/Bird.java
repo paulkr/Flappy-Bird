@@ -12,11 +12,15 @@ public class Bird extends JPanel {
 	public String color;
 	public int x, y;
 	
-	private int FLOAT_MULTIPLIER     = -1;
-	private final int BIRD_HEIGHT    = 31;
-	private final int BASE_COLLISION = 521 - BIRD_HEIGHT;
-	private final int SHIFT          = 10;
+	// Bird constants
+	private int FLOAT_MULTIPLIER      = -1;
+	private final int BIRD_HEIGHT     = 31;
+	private final int BASE_COLLISION  = 521 - BIRD_HEIGHT;
+	private final int SHIFT           = 10;
+	public final int STARTING_BIRD_X  = 90;
+	public final int STARTING_BIRD_Y  = 343;
 	
+	// Physics variables
 	private double velocity          = 0;
 	private double gravity           = .4;
 	private double delay             = 0;
@@ -26,6 +30,14 @@ public class Bird extends JPanel {
 		this.color = color;
 		this.x = x;
 		this.y = y;
+	}
+
+	/**
+	 * Set new coordinates when starting games
+	 */
+	public void setGameStartPos() {
+		x = STARTING_BIRD_X;
+		y = STARTING_BIRD_Y;
 	}
 
 	/**
@@ -43,6 +55,9 @@ public class Bird extends JPanel {
 
 	}
 
+	/**
+	 * Bird jump
+	 */
 	public void jump () {
 
         if (delay < 1) {
@@ -52,25 +67,36 @@ public class Bird extends JPanel {
 
 	}
 
+	/**
+	 * Rotates bird based on angle passed in
+	 */
 	public void rotate () {
 		
 	}
 
+	/**
+	 * Bird death
+	 */
 	private void die () {
 		System.out.println("BIRD IS DEAD :(");
 		System.exit(-1);
 	}
 
+	/**
+	 * Bird movement during the game
+	 */
 	public void inGame () {
 
+		// If the bird did not hit the base
 		if (y < BASE_COLLISION) {
 
+			// Change and velocity
 			velocity += gravity;
 
-			if (delay > 0) {
-				delay--;
-			}
+			// Lower delay if possible
+			if (delay > 0) { delay--; }
 
+			// Add rounded velocity to y-coordinate
 			y += (int) velocity;
 
 		} else {

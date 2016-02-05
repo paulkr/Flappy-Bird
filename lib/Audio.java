@@ -17,8 +17,10 @@ public class Audio {
 
 	private void playSound (String sound) {
 
+		// Path to sound file
 		String soundURL = "res/sound/" + sound + ".wav";
 
+		// Try to load sound
 		try {
 		    audioInputStream = AudioSystem.getAudioInputStream(this.getClass().getResource(soundURL));
 		    clip = AudioSystem.getClip();
@@ -30,14 +32,23 @@ public class Audio {
 		}
 	}
 
+	/**
+	 * Public method for bird jump sound
+	 */
 	public void jump () {
 		playSound("jump");
 	}
 
+	/**
+	 * Public method for point sound
+	 */
 	public void point () {
 		playSound("point");
 	}
 
+	/**
+	 * Public method for collision/death sound
+	 */
 	public void hit () {
 		playSound("hit");
 	}

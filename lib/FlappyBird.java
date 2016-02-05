@@ -17,8 +17,8 @@ public class FlappyBird extends JFrame implements ActionListener {
 
 	private boolean spacePress;
 
-	private final int WIDTH = 375;
-	private final int HEIGHT = 667;
+	public static final int WIDTH = 375;
+	public static final int HEIGHT = 667;
 	private final int DELAY = 10;
 
 	public FlappyBird () {

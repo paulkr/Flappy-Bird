@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 
 public class Texture {
 
+	// Image attributes
 	private BufferedImage image;
 	private int x, y, width, height;
 	private Rectangle rect;
@@ -22,6 +23,10 @@ public class Texture {
 		this.height = image.getHeight();
 		this.rect = new Rectangle(x, y, width, height);
 	}
+
+	////////////////////////////////////////////////
+	// Public getter methods for image attributes //
+	////////////////////////////////////////////////
 
 	public BufferedImage getImage () {
 		return image;

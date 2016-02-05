@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.Random;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.awt.event.KeyEvent.*;
 import java.util.HashMap;
@@ -19,14 +18,14 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.awt.image.BufferedImage;
 import java.util.Calendar;
-
+import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 
 public class GamePanel extends JPanel implements Globals, KeyListener, MouseListener {
 
-	private Random rand = new Random();
+	private Random rand;
 	private Calendar cal;
 
 	// Fonts
@@ -40,26 +39,28 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	// Moving base effect
 	private static int baseSpeed      = 1;
-	private static int[] baseCoords   = {0, 435};
+	private static int[] baseCoords   = { 0, 435 };
 	private static Audio audio        = new Audio();
 	
+	// Game variables
 	public boolean ready              = false;             // If game is loaded
-	private int gameState             = GAME;              // Game screen state
-	private boolean keys[]            = new boolean[256];  // Array of pressed keys
-	private boolean inStartGameState  = true;              // To show instructions scren
+	private int gameState             = MENU;              // Game screen state
+	private boolean inStartGameState  = false;             // To show instructions scren
 	private Point clickedPoint        = new Point(-1, -1); // Store point when player clicks 
-	private int score                 = 0;                 // Current game score
+	public static int score                  = 0;                 // Current game score
 	
-	private final int SCREEN_WIDTH    = 375;
-	private final int SCREEN_HEIGHT   = 667;
-	private final int STARTING_BIRD_X = 90;
-	private final int STARTING_BIRD_Y = 343;
-	private final Bird menuBird;
+	// Constants
+	private final Bird gameBird;
 	private final boolean darkTheme;
 	private final String randomBird;
 
 
+	public ArrayList<Pipe> pipes = new ArrayList<Pipe>();
+
+
 	public GamePanel () {
+
+		rand = new Random();
 
 		// Try to load ttf file
 		try {
@@ -84,8 +85,10 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		cal = Calendar.getInstance();
 		int currentHour = cal.get(Calendar.HOUR_OF_DAY);
 
+		// If we should use the dark theme
 		boolean dark = currentHour > 12;
 
+		// Array of bird colors
 		String[] birds = new String[] {
 			"yellow",
 			"blue",
@@ -96,12 +99,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		darkTheme = dark;
 		randomBird = birds[rand.nextInt(3)];
 
-		menuBird = new Bird(randomBird, 172, 250);
-
-		// Set all keys to false
-		for (int i = 0; i < 256; i++) {
-			keys[i] = false;
-		}
+		// Game bird
+		gameBird = new Bird(randomBird, 172, 250);
 
 		// Input listeners
 		addKeyListener(this);
@@ -144,7 +143,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			case MENU:
 				drawMenu(g);
 
-				menuBird.menuFloat();
+				gameBird.menuFloat();
 
 				break;
 
@@ -163,7 +162,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				} else {
 					// Start game
 					drawBird(g);
-					menuBird.inGame();
+					gameBird.inGame();
 				}
 
 				break;
@@ -172,8 +171,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	}
 
-	// All game drawing methods
-
+	//////////////////////////////
+	// All game drawing methods //
+	//////////////////////////////
 
 	/**
 	 * Draws a string centered based on given restrictions
@@ -232,9 +232,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			textures.get("rateButton").getY(), null);
 
 		// Credits :p
-		drawCentered("Created by Paul Krishnamurthy", SCREEN_WIDTH, SCREEN_HEIGHT, 600, g2d);
+		drawCentered("Created by Paul Krishnamurthy", FlappyBird.WIDTH, FlappyBird.HEIGHT, 600, g2d);
 		g2d.setFont(flappyMiniFont); // Change font
-		drawCentered("www.PaulKr.com", SCREEN_WIDTH, SCREEN_HEIGHT, 630, g2d);
+		drawCentered("www.PaulKr.com", FlappyBird.WIDTH, FlappyBird.HEIGHT, 630, g2d);
 
 	}
 
@@ -243,7 +243,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	 */
 	private void drawBird (Graphics g2d) {
 
-		switch (menuBird.color) {
+		// Draw animations based on bird color
+
+		switch (gameBird.color) {
 			case "yellow":
 				Animation.animate(g2d,
 				new BufferedImage[] {
@@ -251,7 +253,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 					textures.get("yellowBird2").getImage(), 
 					textures.get("yellowBird3").getImage()
 				},
-				menuBird.x, menuBird.y, .09);
+				gameBird.x, gameBird.y, .09);
 				break;
 
 			case "blue":
@@ -261,7 +263,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 					textures.get("blueBird2").getImage(), 
 					textures.get("blueBird3").getImage()
 				},
-				menuBird.x, menuBird.y, .09);
+				gameBird.x, gameBird.y, .09);
 				break;
 
 			case "red":
@@ -271,7 +273,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 					textures.get("redBird2").getImage(), 
 					textures.get("redBird3").getImage()
 				},
-				menuBird.x, menuBird.y, .09);
+				gameBird.x, gameBird.y, .09);
 				break;
 		}
 	}
@@ -282,8 +284,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	public void startGameScreen (Graphics g2d) {
 
-		menuBird.x = STARTING_BIRD_X;
-		menuBird.y = STARTING_BIRD_Y;
+		// Set bird's new position
+		gameBird.setGameStartPos();
 
 		// Get ready text
 		g2d.drawImage(textures.get("getReadyText").getImage(),
@@ -302,17 +304,21 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	 */
 	public void drawScore (Graphics g2d) {
 	
+		// Char array of digits
 		char[] digits = ("" + score).toCharArray();
 		
 		int digitCount = digits.length;
 
+		// Calculate width for numeric textures
 		int takeUp = 0;
 		for (char digit : digits) {
 			takeUp += digit == '1' ? 25 : 35;
 		}
 
-		int drawScoreX = SCREEN_WIDTH / 2 - takeUp / 2;
+		// Calculate x-coordinate
+		int drawScoreX = FlappyBird.WIDTH / 2 - takeUp / 2;
 
+		// Draw every digit
 		for (int i = 0; i < digitCount; i++) {
 			g2d.drawImage(textures.get("score-" + digits[i]).getImage(), drawScoreX, 60, null);
 			drawScoreX += digits[i] == '1' ? 25 : 35;
@@ -332,8 +338,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	public void keyPressed (KeyEvent e) {
 
 		int keyCode = e.getKeyCode();
-
-		keys[keyCode] = true;
 
 		switch (gameState) {
 			case MENU:
@@ -362,7 +366,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 						}
 
 						// Jump and play audio even if in instructions state
-						menuBird.jump();
+						gameBird.jump();
 						audio.jump();
 
 						score ++; //testing
@@ -384,23 +388,40 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	public void mousePressed (MouseEvent e) {
 
+		// Save clicked point
 		clickedPoint = e.getPoint();
 
-		System.out.println(score);
+		switch (gameState) {
+			case MENU:
+				if (isTouching(textures.get("playButton").getRect())) {
+					gameState = GAME;
+					inStartGameState = true;
 
-		if (gameState == MENU) {
-			if (isTouching(textures.get("playButton").getRect())) {
-				gameState = GAME;
-				inStartGameState = true;
+				} else if (isTouching(textures.get("leaderboard").getRect())) {
+					System.out.println("CLICKED LEADERBOARD BUTTON");
+					gameState = LEADERBOARD;
 
-			} else if (isTouching(textures.get("leaderboard").getRect())) {
-				System.out.println("CLICKED LEADERBOARD BUTTON");
-				gameState = LEADERBOARD;
+				} else if (isTouching(textures.get("rateButton").getRect())) {
+					Helper.openURL("http://paulkr.com"); // Open website
+				}
+				break;
 
-			} else if (isTouching(textures.get("rateButton").getRect())) {
-				Helper.openURL("http://paulkr.com"); // Open website
-			}
-		} 
+			case GAME:
+
+				// Allow jump with clicks
+				
+				score ++; // testing
+
+				if (inStartGameState) {
+					inStartGameState = false;
+				}
+
+				gameBird.jump();
+				audio.jump();
+
+				break;
+
+		}
 
 	}
 

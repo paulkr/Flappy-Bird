@@ -1,4 +1,4 @@
-*.class
+lib/*.class
 *.pdf
-*.py
+lib/*.py
 *.DS_Store

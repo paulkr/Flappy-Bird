@@ -40,20 +40,20 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	// Moving base effect
 	private static int baseSpeed      = 1;
 	private static int[] baseCoords   = { 0, 435 };
-	private static Audio audio        = new Audio();
+	public static Audio audio         = new Audio();
 	
 	// Game variables
 	public boolean ready              = false;             // If game is loaded
 	private int gameState             = MENU;              // Game screen state
 	private boolean inStartGameState  = false;             // To show instructions scren
 	private Point clickedPoint        = new Point(-1, -1); // Store point when player clicks 
-	public static int score                  = 0;                 // Current game score
+	public static int score           = 0;                 // Current game score
+	private int pipeDistTracker       = 0;
 	
 	// Constants
 	private final Bird gameBird;
 	private final boolean darkTheme;
 	private final String randomBird;
-
 
 	public ArrayList<Pipe> pipes = new ArrayList<Pipe>();
 
@@ -142,6 +142,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 			case MENU:
 				drawMenu(g);
+				drawBase(g);
 
 				gameBird.menuFloat();
 
@@ -163,7 +164,11 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 					// Start game
 					drawBird(g);
 					gameBird.inGame();
+					pipeHandler(g);
 				}
+
+				// Draw base over pipes
+				drawBase(g);
 
 				break;
 
@@ -171,9 +176,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	}
 
-	//////////////////////////////
-	// All game drawing methods //
-	//////////////////////////////
+	/////////////////////////
+	// All drawing methods //
+	/////////////////////////
 
 	/**
 	 * Draws a string centered based on given restrictions
@@ -192,6 +197,17 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	}
 
 	/**
+	 * Needs to be called differently based on screen
+	 */
+	public void drawBase (Graphics g2d) {
+
+		// Moving base effect
+		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], textures.get("base").getY(), null);
+		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], textures.get("base").getY(), null);
+	
+	}
+
+	/**
 	 * Draws items that stay no matter what the scene is
 	 */
 	public void constantItems (Graphics g2d) {
@@ -199,10 +215,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		// Background
 		g2d.drawImage(darkTheme ? textures.get("background2").getImage() : 
 			textures.get("background1").getImage(), 0, 0, null);
-
-		// Moving base effect
-		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], textures.get("base").getY(), null);
-		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], textures.get("base").getY(), null);
 
 		// Draw bird
 		drawBird(g2d);
@@ -326,6 +338,75 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	}
 
+	/**
+	 * Moves and repositions pipes
+	 */
+	public void pipeHandler (Graphics g2d) {
+
+		// Decrease distance between pipes
+		pipeDistTracker --;
+
+		Pipe topPipe = null;
+		Pipe bottomPipe = null;
+
+		// If there is no distance,
+		// a new pipe is needed
+		if (pipeDistTracker < 0) {
+
+			// Reset distance
+			pipeDistTracker = Pipe.PIPE_DISTANCE;
+
+			for (Pipe p : pipes) {
+				// If pipe is out of screen
+				if (p.getX() < 0) {
+					if (topPipe == null) { topPipe = p; }
+					else if (bottomPipe == null) {bottomPipe = p; }
+				}
+			}
+
+			Pipe currentPipe; // New pipe object
+
+			// Move and handle initial creation of pipes
+
+			if (topPipe == null) {
+				currentPipe = new Pipe("top");
+				pipes.add(currentPipe);
+				topPipe = new Pipe("top");
+			} else {
+				topPipe.reset();
+			}
+
+			if (bottomPipe == null) {
+				currentPipe = new Pipe("bottom");
+				pipes.add(currentPipe);
+				bottomPipe = currentPipe;
+			} else {
+				bottomPipe.reset();
+			}
+
+			// Set y-coordinate of bottom pipe based on 
+			// y-coordinate of top pipe
+			bottomPipe.setY(topPipe.getY() + Pipe.PIPE_SPACING);
+			// System.out.println(bottomPipe.getY());
+
+		}
+
+		// Move and draw each pipe
+
+		for (Pipe p : pipes) {
+			p.move(); // Move the pipe
+
+			// Draw the top and bottom pipes
+			if (p.getY() <= 0) {
+				g2d.drawImage(textures.get("pipe-top").getImage(), p.getX(), p.getY(), null);
+			} else {
+				g2d.drawImage(textures.get("pipe-bottom").getImage(), p.getX(), p.getY(), null);
+				// System.out.println(p.getX() + " and " + p.getY());
+			}
+		}
+		
+
+	}
 
 
 	//////////////////////
@@ -376,6 +457,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				break;
 		}
 	}
+
 
 	///////////////////
 	// Mouse actions //

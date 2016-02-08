@@ -38,7 +38,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private HashMap<String, Texture> textures = new Sprites().getGameTextures();
 
 	// Moving base effect
-	private static int baseSpeed      = 1;
+	private static int baseSpeed      = 2;
 	private static int[] baseCoords   = { 0, 435 };
 	public static Audio audio         = new Audio();
 	
@@ -153,8 +153,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				break;
 
 			case GAME:
-				
-				drawScore(g); // Draw player score
 
 				// Start at instructions state
 				if (inStartGameState) {
@@ -167,8 +165,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 					pipeHandler(g);
 				}
 
-				// Draw base over pipes
-				drawBase(g);
+				drawBase(g); // Draw base over pipes
+
+				drawScore(g); // Draw player score
 
 				break;
 
@@ -204,7 +203,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		// Moving base effect
 		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], textures.get("base").getY(), null);
 		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], textures.get("base").getY(), null);
-	
+
 	}
 
 	/**
@@ -371,7 +370,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			if (topPipe == null) {
 				currentPipe = new Pipe("top");
 				pipes.add(currentPipe);
-				topPipe = new Pipe("top");
+				topPipe = currentPipe;
 			} else {
 				topPipe.reset();
 			}
@@ -387,7 +386,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			// Set y-coordinate of bottom pipe based on 
 			// y-coordinate of top pipe
 			bottomPipe.setY(topPipe.getY() + Pipe.PIPE_SPACING);
-			// System.out.println(bottomPipe.getY());
 
 		}
 
@@ -401,7 +399,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				g2d.drawImage(textures.get("pipe-top").getImage(), p.getX(), p.getY(), null);
 			} else {
 				g2d.drawImage(textures.get("pipe-bottom").getImage(), p.getX(), p.getY(), null);
-				// System.out.println(p.getX() + " and " + p.getY());
 			}
 		}
 		

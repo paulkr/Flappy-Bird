@@ -16,7 +16,7 @@ public class Pipe {
 	public static final int WIDTH = 67;
 	public static final int HEIGHT = 416;
 	public static final int PIPE_DISTANCE = 150;          // Horizontal distance between pipes
-	public static final int PIPE_SPACING  = 120 + HEIGHT; // Vertical distance between pipes
+	public static final int PIPE_SPACING = HEIGHT + 170;  // Vertical distance between pipes
 
 	private final int speed = -2;
 
@@ -29,7 +29,7 @@ public class Pipe {
 		x = FlappyBird.WIDTH + 5;
 
 		if (location.equals("top")) {
-			y = (int) (Math.random() * 300 - HEIGHT / 2);
+			y = - Math.max((int) (Math.random() * 320) + 30, 140);
 		}
 	}
 
@@ -53,8 +53,8 @@ public class Pipe {
 		return y;
 	}
 
-	public void setY (int _y) {
-		y = _y;
+	public void setY (int newY) {
+		y = newY;
 	}
 
 }

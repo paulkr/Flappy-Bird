@@ -19,7 +19,7 @@ public class FlappyBird extends JFrame implements ActionListener {
 
 	public static final int WIDTH = 375;
 	public static final int HEIGHT = 667;
-	private final int DELAY = 10;
+	private static final int DELAY = 10;
 
 	public FlappyBird () {
 
@@ -29,7 +29,7 @@ public class FlappyBird extends JFrame implements ActionListener {
 
 		gameTimer = new Timer(DELAY, this);
 		gameTimer.start();
-
+ 
 		game = new GamePanel();
 		add(game);
 

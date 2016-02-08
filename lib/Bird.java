@@ -87,7 +87,7 @@ public class Bird extends JPanel {
 	public void inGame () {
 
 		// If the bird did not hit the base
-		if (y < BASE_COLLISION) {
+		if(true){ //if (y < BASE_COLLISION) {
 
 			// Change and velocity
 			velocity += gravity;

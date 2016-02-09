@@ -22,12 +22,12 @@ public class Animation {
 	 * @param y           y-coordinate
 	 * @param speed       Speed of animation
 	 */
-	public static void animate (Graphics g2d, BufferedImage[] sprites, int x, int y, double speed) {
+	public static void animate (Graphics g, BufferedImage[] sprites, int x, int y, double speed) {
 		
 		int count = sprites.length;
 		
 		// Draw the current frame
-		g2d.drawImage(sprites[(int) (Math.round(currentFrame))], x, y, null);
+		g.drawImage(sprites[(int) (Math.round(currentFrame))], x, y, null);
 
 		// Switch animation frames
         if (currentFrame >= count - 1) {

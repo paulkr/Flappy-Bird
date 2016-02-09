@@ -18,7 +18,6 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.awt.image.BufferedImage;
 import java.util.Calendar;
-import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
@@ -35,7 +34,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				 flappyMiniFont = null;
 
 	// Textures
-	private HashMap<String, Texture> textures = new Sprites().getGameTextures();
+	public static HashMap<String, Texture> textures = new Sprites().getGameTextures();
 
 	// Moving base effect
 	private static int baseSpeed      = 2;
@@ -100,7 +99,11 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		randomBird = birds[rand.nextInt(3)];
 
 		// Game bird
-		gameBird = new Bird(randomBird, 172, 250);
+		gameBird = new Bird(randomBird, 172, 250, new BufferedImage[] {
+			textures.get(randomBird + "Bird1").getImage(),
+			textures.get(randomBird + "Bird2").getImage(),
+			textures.get(randomBird + "Bird3").getImage()
+		});
 
 		// Input listeners
 		addKeyListener(this);
@@ -141,8 +144,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		switch (gameState) {
 
 			case MENU:
-				drawMenu(g);
 				drawBase(g);
+				drawMenu(g);
 
 				gameBird.menuFloat();
 
@@ -160,13 +163,12 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 				} else {
 					// Start game
-					drawBird(g);
+					gameBird.renderBird(g);
 					gameBird.inGame();
 					pipeHandler(g);
 				}
 
 				drawBase(g); // Draw base over pipes
-
 				drawScore(g); // Draw player score
 
 				break;
@@ -198,25 +200,25 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	/**
 	 * Needs to be called differently based on screen
 	 */
-	public void drawBase (Graphics g2d) {
+	public void drawBase (Graphics g) {
 
 		// Moving base effect
-		g2d.drawImage(textures.get("base").getImage(), baseCoords[0], textures.get("base").getY(), null);
-		g2d.drawImage(textures.get("base").getImage(), baseCoords[1], textures.get("base").getY(), null);
+		g.drawImage(textures.get("base").getImage(), baseCoords[0], textures.get("base").getY(), null);
+		g.drawImage(textures.get("base").getImage(), baseCoords[1], textures.get("base").getY(), null);
 
 	}
 
 	/**
 	 * Draws items that stay no matter what the scene is
 	 */
-	public void constantItems (Graphics g2d) {
+	public void constantItems (Graphics g) {
 
 		// Background
-		g2d.drawImage(darkTheme ? textures.get("background2").getImage() : 
+		g.drawImage(darkTheme ? textures.get("background2").getImage() : 
 			textures.get("background1").getImage(), 0, 0, null);
 
 		// Draw bird
-		drawBird(g2d);
+		gameBird.renderBird(g);
 
 	}
 
@@ -224,87 +226,47 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	// Menuscreen //
 	////////////////
 
-	private void drawMenu (Graphics g2d) {
+	private void drawMenu (Graphics g) {
 
 		// Title
-		g2d.drawImage(textures.get("titleText").getImage(), 
+		g.drawImage(textures.get("titleText").getImage(), 
 			textures.get("titleText").getX(), 
 			textures.get("titleText").getY(), null);
 
 		// Buttons
-		g2d.drawImage(textures.get("playButton").getImage(),
+		g.drawImage(textures.get("playButton").getImage(),
 			textures.get("playButton").getX(),
 			textures.get("playButton").getY(), null);
-		g2d.drawImage(textures.get("leaderboard").getImage(),
+		g.drawImage(textures.get("leaderboard").getImage(),
 			textures.get("leaderboard").getX(),
 			textures.get("leaderboard").getY(), null);
-		g2d.drawImage(textures.get("rateButton").getImage(),
+		g.drawImage(textures.get("rateButton").getImage(),
 			textures.get("rateButton").getX(),
 			textures.get("rateButton").getY(), null);
 
 		// Credits :p
-		drawCentered("Created by Paul Krishnamurthy", FlappyBird.WIDTH, FlappyBird.HEIGHT, 600, g2d);
-		g2d.setFont(flappyMiniFont); // Change font
-		drawCentered("www.PaulKr.com", FlappyBird.WIDTH, FlappyBird.HEIGHT, 630, g2d);
+		drawCentered("Created by Paul Krishnamurthy", FlappyBird.WIDTH, FlappyBird.HEIGHT, 600, g);
+		g.setFont(flappyMiniFont); // Change font
+		drawCentered("www.PaulKr.com", FlappyBird.WIDTH, FlappyBird.HEIGHT, 630, g);
 
-	}
-
-	/**
-	 * Draws bird
-	 */
-	private void drawBird (Graphics g2d) {
-
-		// Draw animations based on bird color
-
-		switch (gameBird.color) {
-			case "yellow":
-				Animation.animate(g2d,
-				new BufferedImage[] {
-					textures.get("yellowBird1").getImage(),
-					textures.get("yellowBird2").getImage(), 
-					textures.get("yellowBird3").getImage()
-				},
-				gameBird.x, gameBird.y, .09);
-				break;
-
-			case "blue":
-				Animation.animate(g2d,
-				new BufferedImage[] {
-					textures.get("blueBird1").getImage(),
-					textures.get("blueBird2").getImage(), 
-					textures.get("blueBird3").getImage()
-				},
-				gameBird.x, gameBird.y, .09);
-				break;
-
-			case "red":
-				Animation.animate(g2d,
-				new BufferedImage[] {
-					textures.get("redBird1").getImage(),
-					textures.get("redBird2").getImage(), 
-					textures.get("redBird3").getImage()
-				},
-				gameBird.x, gameBird.y, .09);
-				break;
-		}
 	}
 
 	/////////////////
 	// Game screen //
 	/////////////////
 
-	public void startGameScreen (Graphics g2d) {
+	public void startGameScreen (Graphics g) {
 
 		// Set bird's new position
 		gameBird.setGameStartPos();
 
 		// Get ready text
-		g2d.drawImage(textures.get("getReadyText").getImage(),
+		g.drawImage(textures.get("getReadyText").getImage(),
 			textures.get("getReadyText").getX(),
 			textures.get("getReadyText").getY(), null);
 
 		// Instructions image
-		g2d.drawImage(textures.get("instructions").getImage(), 
+		g.drawImage(textures.get("instructions").getImage(), 
 			textures.get("instructions").getX(),
 			textures.get("instructions").getY(), null);
 
@@ -313,7 +275,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	/**
 	 * Aligns and draws score using image textures
 	 */
-	public void drawScore (Graphics g2d) {
+	public void drawScore (Graphics g) {
 	
 		// Char array of digits
 		char[] digits = ("" + score).toCharArray();
@@ -331,7 +293,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 		// Draw every digit
 		for (int i = 0; i < digitCount; i++) {
-			g2d.drawImage(textures.get("score-" + digits[i]).getImage(), drawScoreX, 60, null);
+			g.drawImage(textures.get("score-" + digits[i]).getImage(), drawScoreX, 60, null);
 			drawScoreX += digits[i] == '1' ? 25 : 35;
 		}
 
@@ -340,7 +302,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	/**
 	 * Moves and repositions pipes
 	 */
-	public void pipeHandler (Graphics g2d) {
+	public void pipeHandler (Graphics g) {
 
 		// Decrease distance between pipes
 		pipeDistTracker --;
@@ -396,9 +358,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 			// Draw the top and bottom pipes
 			if (p.getY() <= 0) {
-				g2d.drawImage(textures.get("pipe-top").getImage(), p.getX(), p.getY(), null);
+				g.drawImage(textures.get("pipe-top").getImage(), p.getX(), p.getY(), null);
 			} else {
-				g2d.drawImage(textures.get("pipe-bottom").getImage(), p.getX(), p.getY(), null);
+				g.drawImage(textures.get("pipe-bottom").getImage(), p.getX(), p.getY(), null);
 			}
 		}
 		

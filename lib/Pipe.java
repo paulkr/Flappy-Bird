@@ -37,8 +37,10 @@ public class Pipe {
 		x += speed;
 	}
 
-	public boolean collide () {
+	public boolean collide (int nX, int nY, int nW, int nH) {
+		
 		return true;
+
 	}
 
 	public void passed () {

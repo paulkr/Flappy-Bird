@@ -6,6 +6,8 @@
  */
 
 import javax.swing.JPanel;
+import java.awt.image.BufferedImage;
+import java.awt.Graphics;
 
 public class Bird extends JPanel {
 
@@ -25,10 +27,13 @@ public class Bird extends JPanel {
 	private double gravity           = .4;
 	private double delay             = 0;
 
-	public Bird (String color, int x, int y) {
+	private BufferedImage[] sprites;
+
+	public Bird (String color, int x, int y, BufferedImage[] s) {
 		this.color = color;
 		this.x = x;
 		this.y = y;
+		this.sprites = s;
 	}
 
 	/**
@@ -104,4 +109,15 @@ public class Bird extends JPanel {
 		}
 
 	}
+
+	/**
+	 * Renders bird
+	 */
+	public void renderBird (Graphics g) {
+
+		// Create bird animation
+		Animation.animate(g, sprites, x, y, .09);
+
+	}
+
 }

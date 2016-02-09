@@ -85,7 +85,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		int currentHour = cal.get(Calendar.HOUR_OF_DAY);
 
 		// If we should use the dark theme
-		boolean dark = currentHour > 12;
+		boolean dark = false;//currentHour > 12;
 
 		// Array of bird colors
 		String[] birds = new String[] {

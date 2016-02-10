@@ -171,10 +171,17 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				drawBase(g); // Draw base over pipes
 				drawScore(g); // Draw player score
 
+				// Check for base collision
+				if (!gameBird.isAlive()) {
+					gameState = DEATH;
+				}
+
+
 				break;
 
 			case DEATH:
 				System.out.println("GAME OVER");
+				System.exit(-1);
 				break;
 
 		}
@@ -367,6 +374,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				g.drawImage(textures.get("pipe-bottom").getImage(), p.getX(), p.getY(), null);
 			}
 
+			// Check if bird hits pipes
 			if (p.collide(
 				gameBird.getX(), 
 				gameBird.getY(),

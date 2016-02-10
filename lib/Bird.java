@@ -13,6 +13,7 @@ public class Bird extends JPanel {
 
 	public String color;
 	private int x, y;
+	private boolean isAlive = true;
 	
 	// Bird constants
 	private int FLOAT_MULTIPLIER     = -1;
@@ -43,6 +44,10 @@ public class Bird extends JPanel {
 
 	public int getY () {
 		return y;
+	}
+
+	public boolean isAlive () {
+		return isAlive;
 	}
 
 	/**
@@ -88,20 +93,12 @@ public class Bird extends JPanel {
 	}
 
 	/**
-	 * Bird death
-	 */
-	private void die () {
-		System.out.println("BIRD IS DEAD :(");
-		System.exit(-1);
-	}
-
-	/**
 	 * Bird movement during the game
 	 */
 	public void inGame () {
 
 		// If the bird did not hit the base
-		if(true){ //if (y < BASE_COLLISION) {
+		if (y < BASE_COLLISION) {
 
 			// Change and velocity
 			velocity += gravity;
@@ -114,7 +111,7 @@ public class Bird extends JPanel {
 
 		} else {
 			GamePanel.audio.hit();
-			die();
+			isAlive = false;
 		}
 
 	}

@@ -13,3 +13,11 @@ Build & Run
 $ cd lib
 $ javac FlappyBird.java && java FlappyBird
 ```
+
+
+TODO:
+-----
+- [ ] Bird cannot go over pipes
+- [ ] Highscores
+- [ ] Death screen
+- [ ] New game option

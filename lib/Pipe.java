@@ -20,6 +20,10 @@ public class Pipe {
 
 	private final int speed = -2;
 
+
+	// If the bird can get a point passing this pipe
+	public boolean canAwardPoint = true;
+
 	public Pipe (String location) {
 		this.location = location;
 		reset();
@@ -54,17 +58,19 @@ public class Pipe {
 	 */
 	public boolean collide (int nX, int nY, int nW, int nH) {
 
-		return (nX < x + WIDTH && 
+		boolean collided = nX < x + WIDTH && 
 				nX + nW > x &&
 				nY < y + HEIGHT &&
-				nY + nH > y);
+				nY + nH > y;
+
+		if (collided) {
+			GamePanel.audio.hit();
+		}
+
+		return collided;
 
 	}
-
-	public void passed () {
-		GamePanel.score ++;
-	}
-
+	
 	public int getX () {
 		return x;
 	}

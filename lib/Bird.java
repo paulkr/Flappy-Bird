@@ -8,6 +8,8 @@
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 
 public class Bird extends JPanel {
 
@@ -16,18 +18,19 @@ public class Bird extends JPanel {
 	private boolean isAlive = true;
 	
 	// Bird constants
-	private int FLOAT_MULTIPLIER     = -1;
-	public final int BIRD_WIDTH      = 44;
-	public final int BIRD_HEIGHT     = 31;
-	private final int BASE_COLLISION = 521 - BIRD_HEIGHT;
-	private final int SHIFT          = 10;
-	public final int STARTING_BIRD_X = 90;
-	public final int STARTING_BIRD_Y = 343;
+	private int FLOAT_MULTIPLIER      = -1;
+	public final int BIRD_WIDTH       = 44;
+	public final int BIRD_HEIGHT      = 31;
+	private final int BASE_COLLISION  = 521 - BIRD_HEIGHT - 5;
+	private final int SHIFT           = 10;
+	private final int STARTING_BIRD_X = 90;
+	private final int STARTING_BIRD_Y = 343;
+	private final int FALL_SPEED      = 3;
 	
 	// Physics variables
-	private double velocity          = 0;
-	private double gravity           = .4;
-	private double delay             = 0;
+	private double velocity           = 0;
+	private double gravity            = .41;
+	private double delay              = 0;
 
 	private BufferedImage[] sprites;
 
@@ -48,6 +51,10 @@ public class Bird extends JPanel {
 
 	public boolean isAlive () {
 		return isAlive;
+	}
+
+	public void kill () {
+		isAlive = false;
 	}
 
 	/**
@@ -78,18 +85,11 @@ public class Bird extends JPanel {
 	 */
 	public void jump () {
 
-        if (delay < 1) {
-            velocity = -SHIFT;
-            delay = SHIFT;
-        }
+		if (delay < 1) {
+			velocity = -SHIFT;
+			delay = SHIFT;
+		}
 
-	}
-
-	/**
-	 * Rotates bird based on angle passed in
-	 */
-	public void rotate () {
-		
 	}
 
 	/**
@@ -121,8 +121,31 @@ public class Bird extends JPanel {
 	 */
 	public void renderBird (Graphics g) {
 
-		// Create bird animation
-		Animation.animate(g, sprites, x, y, .09);
+		Graphics2D g2d = (Graphics2D) g;
+
+		if (isAlive()) {
+
+			// Create bird animation
+			Animation.animate(g, sprites, x, y, .09);
+
+		} else {
+
+			if (y < BASE_COLLISION - 10) {
+				velocity += gravity;
+				y += (int) velocity;
+			}
+
+			AffineTransform trans = g2d.getTransform();
+
+			AffineTransform at = new AffineTransform();
+			at.rotate(.9, x+25, y+25);
+			g2d.transform(at);
+			g2d.drawImage(sprites[0], x, y, null);
+			g2d.setTransform(trans);
+
+			// g.drawImage(sprites[0], x, y, null);
+
+		}
 
 	}
 

@@ -134,12 +134,18 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		g.setFont(flappyFontReal);
 		g.setColor(Color.white);
 
-		// Move base
-		baseCoords[0] = baseCoords[0] - baseSpeed < -435 ? 435 : baseCoords[0] - baseSpeed;
-		baseCoords[1] = baseCoords[1] - baseSpeed < -435 ? 435 : baseCoords[1] - baseSpeed;
+		// Only move screen if bird is alive
+		if (gameBird.isAlive()) {
 
-		// Paint constant items
-		constantItems(g);
+			// Move base
+			baseCoords[0] = baseCoords[0] - baseSpeed < -435 ? 435 : baseCoords[0] - baseSpeed;
+			baseCoords[1] = baseCoords[1] - baseSpeed < -435 ? 435 : baseCoords[1] - baseSpeed;
+
+		}
+
+		// Background
+		g.drawImage(darkTheme ? textures.get("background2").getImage() : 
+			textures.get("background1").getImage(), 0, 0, null);
 
 		switch (gameState) {
 
@@ -157,34 +163,36 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 			case GAME:
 
-				// Start at instructions state
-				if (inStartGameState) {
-					startGameScreen(g);
+				if (gameBird.isAlive()) {
+
+					// Start at instructions state
+					if (inStartGameState) {
+						startGameScreen(g);
+
+					} else {
+						// Start game
+						pipeHandler(g);
+						gameBird.inGame();
+					}
+
+					drawBase(g); // Draw base over pipes
+					drawScore(g); // Draw player score
 
 				} else {
-					// Start game
-					gameBird.renderBird(g);
-					gameBird.inGame();
+
+					System.out.println("death is upon us");
+
 					pipeHandler(g);
+					drawBase(g);
+
 				}
 
-				drawBase(g); // Draw base over pipes
-				drawScore(g); // Draw player score
-
-				// Check for base collision
-				if (!gameBird.isAlive()) {
-					gameState = DEATH;
-				}
-
-
-				break;
-
-			case DEATH:
-				System.out.println("GAME OVER");
-				System.exit(-1);
 				break;
 
 		}
+
+		// Draw bird
+		gameBird.renderBird(g);
 
 	}
 
@@ -216,20 +224,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		// Moving base effect
 		g.drawImage(textures.get("base").getImage(), baseCoords[0], textures.get("base").getY(), null);
 		g.drawImage(textures.get("base").getImage(), baseCoords[1], textures.get("base").getY(), null);
-
-	}
-
-	/**
-	 * Draws items that stay no matter what the scene is
-	 */
-	public void constantItems (Graphics g) {
-
-		// Background
-		g.drawImage(darkTheme ? textures.get("background2").getImage() : 
-			textures.get("background1").getImage(), 0, 0, null);
-
-		// Draw bird
-		gameBird.renderBird(g);
 
 	}
 
@@ -316,7 +310,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	public void pipeHandler (Graphics g) {
 
 		// Decrease distance between pipes
-		pipeDistTracker --;
+		if (gameBird.isAlive()) {
+			pipeDistTracker --;
+		}
 
 		Pipe topPipe = null;
 		Pipe bottomPipe = null;
@@ -331,8 +327,14 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			for (Pipe p : pipes) {
 				// If pipe is out of screen
 				if (p.getX() < 0) {
-					if (topPipe == null) { topPipe = p; }
-					else if (bottomPipe == null) {bottomPipe = p; }
+					if (topPipe == null) { 
+						topPipe = p;
+						topPipe.canAwardPoint = true;
+					}
+					else if (bottomPipe == null) {
+						bottomPipe = p; 
+						topPipe.canAwardPoint = true;
+					}
 				}
 			}
 
@@ -342,16 +344,19 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 			if (topPipe == null) {
 				currentPipe = new Pipe("top");
-				pipes.add(currentPipe);
 				topPipe = currentPipe;
+				pipes.add(topPipe);
 			} else {
 				topPipe.reset();
 			}
 
 			if (bottomPipe == null) {
 				currentPipe = new Pipe("bottom");
-				pipes.add(currentPipe);
 				bottomPipe = currentPipe;
+				pipes.add(bottomPipe);
+
+				// Avoid doubling points when passing initial pipes
+				bottomPipe.canAwardPoint = false;
 			} else {
 				bottomPipe.reset();
 			}
@@ -365,7 +370,11 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		// Move and draw each pipe
 
 		for (Pipe p : pipes) {
-			p.move(); // Move the pipe
+
+			// Move the pipe
+			if (gameBird.isAlive()) {
+				p.move();
+			}
 
 			// Draw the top and bottom pipes
 			if (p.getY() <= 0) {
@@ -375,18 +384,28 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			}
 
 			// Check if bird hits pipes
-			if (p.collide(
-				gameBird.getX(), 
-				gameBird.getY(),
-				gameBird.BIRD_WIDTH,
-				gameBird.BIRD_HEIGHT
-			)) {
-				gameState = DEATH;
+			if (gameBird.isAlive()) {
+				if (p.collide(
+					gameBird.getX(), 
+					gameBird.getY(),
+					gameBird.BIRD_WIDTH,
+					gameBird.BIRD_HEIGHT
+				)) {
+					gameBird.kill();
+					audio.hit();
+				} else {
+
+					// Checks if bird passes a pipe
+					if (gameBird.getX() >= p.getX() + p.WIDTH / 2) {
+						if (p.canAwardPoint) {
+							audio.point();
+							score ++;
+							p.canAwardPoint = false;
+						}
+					}
+				}
 			}
-
 		}
-		
-
 	}
 
 
@@ -403,38 +422,31 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 		switch (gameState) {
 			case MENU:
-				switch (keyCode) {
 
-					// Start game on 'enter'
-					case KeyEvent.VK_ENTER:
-						gameState = GAME;
-						inStartGameState = true;
-						break;
-
-					// Open leaderboard on 'L'
-					case KeyEvent.VK_L:
-						System.out.println("L PRESSED");
-						gameState = LEADERBOARD;
-						break;
+				// Start game on 'enter'
+				if (keyCode == KeyEvent.VK_ENTER) {
+					gameState = GAME;
+					inStartGameState = true;
 				}
+
+				if (keyCode == KeyEvent.VK_L) {
+					gameState = LEADERBOARD;
+				}
+
 				break;
 
 			case GAME:
-				switch (keyCode) {
-					case KeyEvent.VK_SPACE:
 
-						if (inStartGameState) {
-							inStartGameState = false;
-						}
+				if (keyCode == KeyEvent.VK_SPACE) {
+					if (inStartGameState) {
+						inStartGameState = false;
+					}
 
-						// Jump and play audio even if in instructions state
-						gameBird.jump();
-						audio.jump();
-
-						score ++; //testing
-
-						break;
+					// Jump and play audio even if in instructions state
+					gameBird.jump();
+					audio.jump();
 				}
+
 				break;
 		}
 	}
@@ -472,8 +484,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			case GAME:
 
 				// Allow jump with clicks
-				
-				score ++; // testing
 
 				if (inStartGameState) {
 					inStartGameState = false;

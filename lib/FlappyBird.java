@@ -7,6 +7,7 @@
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.awt.Toolkit;
 
 public class FlappyBird extends JFrame implements ActionListener {
 
@@ -16,9 +17,9 @@ public class FlappyBird extends JFrame implements ActionListener {
 
 	private boolean spacePress;
 
-	public static final int WIDTH = 375;
+	public static final int WIDTH  = 375;
 	public static final int HEIGHT = 667;
-	private static final int DELAY = 10;
+	private static final int DELAY = 12;
 
 	public FlappyBird () {
 
@@ -28,12 +29,14 @@ public class FlappyBird extends JFrame implements ActionListener {
 
 		gameTimer = new Timer(DELAY, this);
 		gameTimer.start();
- 
+  
 		game = new GamePanel();
 		add(game);
 
+		setIconImage(Toolkit.getDefaultToolkit().getImage("res/img/icons.png"));
+
 		setResizable(false);
-		setVisible(true);	
+		setVisible(true);
 
 	}
 

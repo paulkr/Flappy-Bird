@@ -85,7 +85,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		int currentHour = cal.get(Calendar.HOUR_OF_DAY);
 
 		// If we should use the dark theme
-		boolean dark = false;//currentHour > 12;
+		boolean dark = currentHour > 12;
 
 		// Array of bird colors
 		String[] birds = new String[] {
@@ -171,6 +171,10 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				drawBase(g); // Draw base over pipes
 				drawScore(g); // Draw player score
 
+				break;
+
+			case DEATH:
+				System.out.println("GAME OVER");
 				break;
 
 		}
@@ -362,6 +366,16 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			} else {
 				g.drawImage(textures.get("pipe-bottom").getImage(), p.getX(), p.getY(), null);
 			}
+
+			if (p.collide(
+				gameBird.getX(), 
+				gameBird.getY(),
+				gameBird.BIRD_WIDTH,
+				gameBird.BIRD_HEIGHT
+			)) {
+				gameState = DEATH;
+			}
+
 		}
 		
 

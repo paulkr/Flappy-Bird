@@ -6,7 +6,6 @@
  */
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 
 public class Animation {

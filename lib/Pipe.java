@@ -13,10 +13,10 @@ public class Pipe {
 
 	String location;
 
-	public static final int WIDTH = 67;
-	public static final int HEIGHT = 416;
+	public static final int WIDTH         = 67;
+	public static final int HEIGHT        = 416;
 	public static final int PIPE_DISTANCE = 150;          // Horizontal distance between pipes
-	public static final int PIPE_SPACING = HEIGHT + 170;  // Vertical distance between pipes
+	public static final int PIPE_SPACING  = HEIGHT + 170; // Vertical distance between pipes
 
 	private final int speed = -2;
 
@@ -28,18 +28,36 @@ public class Pipe {
 	public void reset () {
 		x = FlappyBird.WIDTH + 5;
 
+		// Set boundaries for top pipes
+		// This y-coordinte + PIPE_SPACING will be for the bottom pipe
 		if (location.equals("top")) {
 			y = - Math.max((int) (Math.random() * 320) + 30, 140);
 		}
 	}
 
+	/**
+	 * Moves the pipe
+	 */
 	public void move () {
 		x += speed;
 	}
 
+
+	/**
+	 * Checks for bird colliding with pipe
+	 * 
+	 * @param  nX     Bird x-coordinate
+	 * @param  nY     Bird y-coordinate
+	 * @param  nW     Bird width
+	 * @param  nH     Bird height
+	 * @return        If bird is colliding with the pipe
+	 */
 	public boolean collide (int nX, int nY, int nW, int nH) {
-		
-		return true;
+
+		return (nX < x + WIDTH && 
+				nX + nW > x &&
+				nY < y + HEIGHT &&
+				nY + nH > y);
 
 	}
 

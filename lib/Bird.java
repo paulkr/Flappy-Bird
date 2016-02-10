@@ -12,11 +12,12 @@ import java.awt.Graphics;
 public class Bird extends JPanel {
 
 	public String color;
-	public int x, y;
+	private int x, y;
 	
 	// Bird constants
 	private int FLOAT_MULTIPLIER     = -1;
-	private final int BIRD_HEIGHT    = 31;
+	public final int BIRD_WIDTH      = 44;
+	public final int BIRD_HEIGHT     = 31;
 	private final int BASE_COLLISION = 521 - BIRD_HEIGHT;
 	private final int SHIFT          = 10;
 	public final int STARTING_BIRD_X = 90;
@@ -34,6 +35,14 @@ public class Bird extends JPanel {
 		this.x = x;
 		this.y = y;
 		this.sprites = s;
+	}
+
+	public int getX () {
+		return x;
+	}
+
+	public int getY () {
+		return y;
 	}
 
 	/**

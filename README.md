@@ -17,7 +17,6 @@ $ javac FlappyBird.java && java FlappyBird
 
 TODO:
 -----
-- [ ] Bird cannot go over pipes
-- [ ] Highscores
-- [ ] Death screen
+- [ ] Do something with leaderboard button
 - [ ] New game option
+- [ ] Set variables in game constructor

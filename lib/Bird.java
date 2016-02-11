@@ -135,6 +135,8 @@ public class Bird extends JPanel {
 				y += (int) velocity;
 			}
 
+			// Rotation
+
 			AffineTransform trans = g2d.getTransform();
 
 			AffineTransform at = new AffineTransform();

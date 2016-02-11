@@ -11,6 +11,7 @@ public class Pipe {
 	private int x = FlappyBird.WIDTH + 5;
 	private int y;
 
+	// Placement (top or bottom) of pipe
 	String location;
 
 	public static final int WIDTH         = 67;
@@ -30,7 +31,7 @@ public class Pipe {
 	}
 
 	public void reset () {
-		x = FlappyBird.WIDTH + 5;
+		x = FlappyBird.WIDTH + 5; // Reset x-coordinate
 
 		// Set boundaries for top pipes
 		// This y-coordinte + PIPE_SPACING will be for the bottom pipe
@@ -58,19 +59,18 @@ public class Pipe {
 	 */
 	public boolean collide (int nX, int nY, int nW, int nH) {
 
-		boolean collided = nX < x + WIDTH && 
+		// Do not allow bird to jump over pipe
+		if (nX > x && nY < 0 && canAwardPoint) {
+			return true;
+		}
+
+		return nX < x + WIDTH && 
 				nX + nW > x &&
 				nY < y + HEIGHT &&
 				nY + nH > y;
 
-		if (collided) {
-			GamePanel.audio.hit();
-		}
-
-		return collided;
-
 	}
-	
+
 	public int getX () {
 		return x;
 	}

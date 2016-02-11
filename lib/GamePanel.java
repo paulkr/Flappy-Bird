@@ -48,6 +48,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private Point clickedPoint        = new Point(-1, -1); // Store point when player clicks 
 	public static int score           = 0;                 // Current game score
 	private int pipeDistTracker       = 0;
+	private boolean scoreWasGreater   = false;
+	private String medal;
 	
 	// Constants
 	private final Bird gameBird;
@@ -55,6 +57,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private final String randomBird;
 
 	public ArrayList<Pipe> pipes = new ArrayList<Pipe>();
+
+	private Highscore highscore = new Highscore();
 
 
 	public GamePanel () {
@@ -147,6 +151,9 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		g.drawImage(darkTheme ? textures.get("background2").getImage() : 
 			textures.get("background1").getImage(), 0, 0, null);
 
+		// Draw bird
+		gameBird.renderBird(g);
+
 		switch (gameState) {
 
 			case MENU:
@@ -175,24 +182,21 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 						gameBird.inGame();
 					}
 
-					drawBase(g); // Draw base over pipes
-					drawScore(g); // Draw player score
+					drawBase(g);                      // Draw base over pipes
+					drawScore(g, score, false, 0, 0); // Draw player score
 
 				} else {
 
-					System.out.println("death is upon us");
-
 					pipeHandler(g);
 					drawBase(g);
+
+					gameOver(g);
 
 				}
 
 				break;
 
 		}
-
-		// Draw bird
-		gameBird.renderBird(g);
 
 	}
 
@@ -279,27 +283,39 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 	/**
 	 * Aligns and draws score using image textures
+	 * 
+	 * @param mini     Boolean for drawing small or large numbers
+	 * @param x        X-coordinate to draw for mini numbers
 	 */
-	public void drawScore (Graphics g) {
+	public void drawScore (Graphics g, int drawNum, boolean mini, int x, int y) {
 	
 		// Char array of digits
-		char[] digits = ("" + score).toCharArray();
+		char[] digits = ("" + drawNum).toCharArray();
 		
 		int digitCount = digits.length;
 
 		// Calculate width for numeric textures
 		int takeUp = 0;
 		for (char digit : digits) {
-			takeUp += digit == '1' ? 25 : 35;
+			if (mini) {
+				takeUp += 18;
+			} else {
+				takeUp += digit == '1' ? 25 : 35;
+			}
 		}
 
 		// Calculate x-coordinate
-		int drawScoreX = FlappyBird.WIDTH / 2 - takeUp / 2;
+		int drawScoreX = mini ? (x - takeUp) : (FlappyBird.WIDTH / 2 - takeUp / 2);
 
 		// Draw every digit
 		for (int i = 0; i < digitCount; i++) {
-			g.drawImage(textures.get("score-" + digits[i]).getImage(), drawScoreX, 60, null);
-			drawScoreX += digits[i] == '1' ? 25 : 35;
+			g.drawImage(textures.get((mini ? "mini-score-" : "score-") + digits[i]).getImage(), drawScoreX, (mini ? y : 60), null);
+			
+			if (mini) {
+				drawScoreX += 18;
+			} else {
+				drawScoreX += digits[i] == '1' ? 25 : 35;
+			}
 		}
 
 	}
@@ -408,6 +424,59 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		}
 	}
 
+	public void gameOver (Graphics g) {
+
+		// Game over text
+		g.drawImage(textures.get("gameOverText").getImage(), 
+			textures.get("gameOverText").getX(), 
+			textures.get("gameOverText").getY(), null);
+
+		// Scorecard
+		g.drawImage(textures.get("scoreCard").getImage(),
+			textures.get("scoreCard").getX(),
+			textures.get("scoreCard").getY(), null);
+
+		// New highscore image
+		if (scoreWasGreater) {
+			g.drawImage(textures.get("newHighscore").getImage(),
+				textures.get("newHighscore").getX(),
+				textures.get("newHighscore").getY(), null);
+		}
+
+		// Draw mini fonts for current and best scores
+		drawScore(g, score, true, 303, 276);
+		drawScore(g, highscore.bestScore(), true, 303, 330);
+
+		// Handle highscore
+		if (score > highscore.bestScore()) {
+
+			// New best score
+			scoreWasGreater = true;
+			highscore.setNewBest(score); // Set in data file
+		}
+
+		// Medal
+		if (score >= 10) { medal = "bronze"; }
+		if (score >= 20) { medal = "silver"; }
+		if (score >= 30) { medal = "gold"; }
+		if (score >= 40) { medal = "platinum"; }
+
+		if (score > 9) {
+			g.drawImage(textures.get(medal).getImage(),
+				textures.get(medal).getX(),
+				textures.get(medal).getY(), null);
+		}
+
+		// Buttons
+		g.drawImage(textures.get("playButton").getImage(),
+			textures.get("playButton").getX(),
+			textures.get("playButton").getY(), null);
+		g.drawImage(textures.get("leaderboard").getImage(),
+			textures.get("leaderboard").getX(),
+			textures.get("leaderboard").getY(), null);
+
+	}
+
 
 	//////////////////////
 	// Keyboard actions //
@@ -450,7 +519,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				break;
 		}
 	}
-
 
 	///////////////////
 	// Mouse actions //

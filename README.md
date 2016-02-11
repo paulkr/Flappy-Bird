@@ -20,3 +20,4 @@ TODO:
 - [ ] Do something with leaderboard button
 - [ ] New game option
 - [ ] Set variables in game constructor
+- [ ] Bird rotation

@@ -1,4 +1,5 @@
 lib/*.class
-*.pdf
 lib/*.py
+lib/res/data/highscore.dat
 *.DS_Store
+*.pdf

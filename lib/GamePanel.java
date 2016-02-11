@@ -164,10 +164,6 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 				break;
 
-			case LEADERBOARD:
-				System.out.println("LEADERBOARD");
-				break;
-
 			case GAME:
 
 				if (gameBird.isAlive()) {
@@ -461,6 +457,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		if (score >= 30) { medal = "gold"; }
 		if (score >= 40) { medal = "platinum"; }
 
+		// Only award a medal if they deserve it
 		if (score > 9) {
 			g.drawImage(textures.get(medal).getImage(),
 				textures.get(medal).getX(),
@@ -489,34 +486,26 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 
 		int keyCode = e.getKeyCode();
 
-		switch (gameState) {
-			case MENU:
+		if (gameState == MENU) {
 
-				// Start game on 'enter'
-				if (keyCode == KeyEvent.VK_ENTER) {
-					gameState = GAME;
-					inStartGameState = true;
+			// Start game on 'enter'
+			if (keyCode == KeyEvent.VK_ENTER) {
+				gameState = GAME;
+				inStartGameState = true;
+			}
+
+		} else if (gameState == GAME) {
+
+			if (keyCode == KeyEvent.VK_SPACE) {
+
+				if (inStartGameState) {
+					inStartGameState = false;
 				}
 
-				if (keyCode == KeyEvent.VK_L) {
-					gameState = LEADERBOARD;
-				}
-
-				break;
-
-			case GAME:
-
-				if (keyCode == KeyEvent.VK_SPACE) {
-					if (inStartGameState) {
-						inStartGameState = false;
-					}
-
-					// Jump and play audio even if in instructions state
-					gameBird.jump();
-					audio.jump();
-				}
-
-				break;
+				// Jump and play audio even if in instructions state
+				gameBird.jump();
+				audio.jump();
+			}
 		}
 	}
 
@@ -534,34 +523,37 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		// Save clicked point
 		clickedPoint = e.getPoint();
 
-		switch (gameState) {
-			case MENU:
-				if (isTouching(textures.get("playButton").getRect())) {
+		if (gameState == MENU || !gameBird.isAlive()) {
+
+			if (isTouching(textures.get("leaderboard").getRect())) {
+
+				// Dummy message
+				JOptionPane.showMessageDialog(this, 
+					"We can't access the leaderboard right now!",
+					"Oops!",
+					JOptionPane.ERROR_MESSAGE);
+			}
+		}
+
+		if (gameState == MENU && gameBird.isAlive()) {
+
+			if (isTouching(textures.get("playButton").getRect())) {
 					gameState = GAME;
 					inStartGameState = true;
-
-				} else if (isTouching(textures.get("leaderboard").getRect())) {
-					System.out.println("CLICKED LEADERBOARD BUTTON");
-					gameState = LEADERBOARD;
 
 				} else if (isTouching(textures.get("rateButton").getRect())) {
 					Helper.openURL("http://paulkr.com"); // Open website
 				}
-				break;
 
-			case GAME:
+		} else if (gameState == GAME) {
+			// Allow jump with clicks
 
-				// Allow jump with clicks
+			if (inStartGameState) {
+				inStartGameState = false;
+			}
 
-				if (inStartGameState) {
-					inStartGameState = false;
-				}
-
-				gameBird.jump();
-				audio.jump();
-
-				break;
-
+			gameBird.jump();
+			audio.jump();
 		}
 
 	}

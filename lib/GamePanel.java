@@ -7,10 +7,10 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.event.KeyEvent.*;
 import javax.swing.*;
 import java.util.Random;
 import java.util.ArrayList;
-import java.awt.event.KeyEvent.*;
 import java.util.HashMap;
 import java.io.InputStream;
 import java.io.File;
@@ -22,13 +22,15 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 
-import java.awt.Toolkit;
-
 public class GamePanel extends JPanel implements KeyListener, MouseListener {
 
 	private Random rand;
 	private Calendar cal;
-
+	
+	////////////////////
+	// Game variables //
+	////////////////////
+	
 	// Fonts
 	private Font flappyFontBase, 
 				 flappyFontReal, 
@@ -36,34 +38,32 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 				 flappyMiniFont = null;
 
 	// Textures
-	public static HashMap<String, Texture> textures = new Sprites().getGameTextures();
-
+	public static HashMap<String, Texture> textures = new Sprites().getGameTextures();	
+	
 	// Moving base effect
-	private static int baseSpeed      = 2;
-	private static int[] baseCoords   = { 0, 435 };
-	public static Audio audio         = new Audio();
-	
-	// Game variables
-	public boolean ready              = false;             // If game is loaded
-	private int gameState             = MENU;              // Game screen state
-	private boolean inStartGameState  = false;             // To show instructions scren
-	private Point clickedPoint        = new Point(-1, -1); // Store point when player clicks 
-	
-	private boolean scoreWasGreater;
-	private String medal;
-	private  int score;
-	private int pipeDistTracker;
-	private Bird gameBird;
-	private boolean darkTheme;
-	private String randomBird;
-
-	public ArrayList<Pipe> pipes;
-
-	private Highscore highscore = new Highscore();
+	private static int baseSpeed    = 2;
+	private static int[] baseCoords = { 0, 435 };
 
 	// Game states
 	final static int MENU = 0;
 	final static int GAME = 1;
+	private int gameState = MENU;  
+
+	private int score;           // Player score
+	private int pipeDistTracker; // Distance between pipes
+	
+	public boolean ready = false;                   // If game has loaded
+	private boolean inStartGameState = false;       // To show instructions scren
+	private Point clickedPoint = new Point(-1, -1); // Store point when player clicks 
+	private boolean scoreWasGreater;                // If score was greater than previous highscore
+	private boolean darkTheme;                      // Boolean to show dark or light screen
+	private String randomBird;                      // Random bird color
+	private String medal;                           // Medal to be awarded after each game
+	public ArrayList<Pipe> pipes;                   // Arraylist of Pipe objects
+
+	private Bird gameBird;
+	private Highscore highscore = new Highscore();
+	public static Audio audio   = new Audio();
 
 
 	public GamePanel () {
@@ -88,7 +88,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 			System.exit(-1);
 		}
 
-		restart();
+		restart(); // Reset game variables
 
 		// Input listeners
 		addKeyListener(this);
@@ -96,6 +96,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 
 	}
 
+	/**
+	 * To start game after everything has been loaded
+	 */
 	public void addNotify() {
 		super.addNotify();
 		requestFocus();
@@ -107,17 +110,15 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 	 */
 	public void restart () {
 
-		score = 0;
-		pipeDistTracker = 0;
-		scoreWasGreater = false;
+		// Reset game statistics
+		score            = 0;
+		pipeDistTracker  = 0;
+		scoreWasGreater  = false;
 
 		// Get current hour with Calendar
 		// If it is past noon, use the dark theme
 		cal = Calendar.getInstance();
 		int currentHour = cal.get(Calendar.HOUR_OF_DAY);
-
-		// If we should use the dark theme
-		boolean dark = currentHour > 12;
 
 		// Array of bird colors
 		String[] birds = new String[] {
@@ -127,8 +128,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 		};
 
 		// Set random scene assets
-		darkTheme = dark;
-		randomBird = birds[rand.nextInt(3)];
+		darkTheme = currentHour > 12; // If we should use the dark theme
+		randomBird = birds[rand.nextInt(3)]; // Random bird color
 
 		// Game bird
 		gameBird = new Bird(randomBird, 172, 250, new BufferedImage[] {
@@ -137,6 +138,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 			textures.get(randomBird + "Bird3").getImage()
 		});
 
+		// Remove old pipes
 		pipes = new ArrayList<Pipe>();
 
 	}
@@ -178,6 +180,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 		switch (gameState) {
 
 			case MENU:
+
 				drawBase(g);
 				drawMenu(g);
 
@@ -207,12 +210,12 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 					pipeHandler(g);
 					drawBase(g);
 
+					// Draw game over assets
 					gameOver(g);
 
 				}
 
 				break;
-
 		}
 
 	}
@@ -314,6 +317,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 		// Calculate width for numeric textures
 		int takeUp = 0;
 		for (char digit : digits) {
+
+			// Size to add varies based on texture
 			if (mini) {
 				takeUp += 18;
 			} else {
@@ -328,6 +333,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 		for (int i = 0; i < digitCount; i++) {
 			g.drawImage(textures.get((mini ? "mini-score-" : "score-") + digits[i]).getImage(), drawScoreX, (mini ? y : 60), null);
 			
+			// Size to add varies based on texture
 			if (mini) {
 				drawScoreX += 18;
 			} else {
@@ -347,6 +353,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 			pipeDistTracker --;
 		}
 
+		// Initialize pipes as null
 		Pipe topPipe = null;
 		Pipe bottomPipe = null;
 
@@ -358,6 +365,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 			pipeDistTracker = Pipe.PIPE_DISTANCE;
 
 			for (Pipe p : pipes) {
+
 				// If pipe is out of screen
 				if (p.getX() < 0) {
 					if (topPipe == null) { 
@@ -371,9 +379,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 				}
 			}
 
-			Pipe currentPipe; // New pipe object
+			Pipe currentPipe; // New pipe object for top and bottom pipes
 
-			// Move and handle initial creation of pipes
+			// Move and handle initial creation of top and bottom pipes
 
 			if (topPipe == null) {
 				currentPipe = new Pipe("top");
@@ -424,12 +432,15 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 					gameBird.BIRD_WIDTH,
 					gameBird.BIRD_HEIGHT
 				)) {
+					// Kill bird and play sound
 					gameBird.kill();
 					audio.hit();
 				} else {
 
 					// Checks if bird passes a pipe
 					if (gameBird.getX() >= p.getX() + p.WIDTH / 2) {
+
+						// Increase score and play sound
 						if (p.canAwardPoint) {
 							audio.point();
 							score ++;
@@ -509,7 +520,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 
 		if (gameState == MENU) {
 
-			// Start game on 'enter'
+			// Start game on 'enter' key
 			if (keyCode == KeyEvent.VK_ENTER) {
 				gameState = GAME;
 				inStartGameState = true;
@@ -519,6 +530,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 
 			if (keyCode == KeyEvent.VK_SPACE) {
 
+				// Exit instructions state
 				if (inStartGameState) {
 					inStartGameState = false;
 				}
@@ -551,6 +563,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 				inStartGameState = true;
 
 			} else if (isTouching(textures.get("leaderboard").getRect())) {
+
 				// Dummy message
 				JOptionPane.showMessageDialog(this, 
 					"We can't access the leaderboard right now!",
@@ -571,16 +584,17 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 			if (gameBird.isAlive()) {
 
 				// Allow jump with clicks
-
 				if (inStartGameState) {
 					inStartGameState = false;
 				}
 
+				// Jump and play sound
 				gameBird.jump();
 				audio.jump();
 
 			} else {
 
+				// On game over screen, allow restart and leaderboard buttons
 				if (isTouching(textures.get("playButton").getRect())) {
 					inStartGameState = true;
 					gameState = GAME;
@@ -588,6 +602,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 					gameBird.setGameStartPos();
 
 				} else if (isTouching(textures.get("leaderboard").getRect())) {
+
 					// Dummy message
 					JOptionPane.showMessageDialog(this, 
 						"We can't access the leaderboard right now!",

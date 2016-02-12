@@ -9,7 +9,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-
 public class Audio {
 
 	private AudioInputStream audioInputStream;
@@ -20,7 +19,7 @@ public class Audio {
 		// Path to sound file
 		String soundURL = "res/sound/" + sound + ".wav";
 
-		// Try to load sound
+		// Try to load and play sound
 		try {
 		    audioInputStream = AudioSystem.getAudioInputStream(this.getClass().getResource(soundURL));
 		    clip = AudioSystem.getClip();

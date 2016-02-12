@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 
 public class Highscore {
 
+	// Read / Write to file setup
 	private static final String FILE_PATH = "res/data/highscore.dat";
 	private static File dataFile          = new File(FILE_PATH);
 	private static Scanner dataScanner    = null;
@@ -50,6 +51,8 @@ public class Highscore {
 	 * @param newBest     New score update
 	 */
 	public void setNewBest (int newBest) {
+
+		// Set new best score
 		bestScore = newBest;
 
 		try {
@@ -60,6 +63,7 @@ public class Highscore {
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			System.out.println("Could not set new highscore!");
 		}
+
 	}
 
 }

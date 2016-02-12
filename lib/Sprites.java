@@ -98,7 +98,6 @@ public class Sprites {
 		// Other assets
 		textures.put("base",      new Texture(resize(spriteSheet.getSubimage(292, 0, 168, 56)),  0, 521));
 		textures.put("scoreCard", new Texture(resize(spriteSheet.getSubimage(3, 259, 113, 57)),  40, 230));
-		
 
 	}
 
@@ -124,7 +123,7 @@ public class Sprites {
 	}
 
 	/**
-	 * Public getter for Textures HashMap
+	 * Public getter method for Textures HashMap
 	 * 
 	 * @return     Texture
 	 */

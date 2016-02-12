@@ -32,6 +32,7 @@ public class Bird extends JPanel {
 	private double gravity            = .41;
 	private double delay              = 0;
 
+	// Bird sprites
 	private BufferedImage[] sprites;
 
 	public Bird (String color, int x, int y, BufferedImage[] s) {
@@ -41,24 +42,36 @@ public class Bird extends JPanel {
 		this.sprites = s;
 	}
 
+	/**
+	 * @return     Bird's x-coordinate
+	 */
 	public int getX () {
 		return x;
 	}
 
+	/**
+	 * @return     Bird's y-coordinate
+	 */
 	public int getY () {
 		return y;
 	}
 
+	/**
+	 * @return     If bird is alive
+	 */
 	public boolean isAlive () {
 		return isAlive;
 	}
 
+	/**
+	 * Kills bird
+	 */
 	public void kill () {
 		isAlive = false;
 	}
 
 	/**
-	 * Set new coordinates when starting games
+	 * Set new coordinates when starting game
 	 */
 	public void setGameStartPos () {
 		x = STARTING_BIRD_X;
@@ -72,6 +85,7 @@ public class Bird extends JPanel {
 
 		y += FLOAT_MULTIPLIER;
 
+		// Change direction within floating range
 		if (y < 220) {
 			FLOAT_MULTIPLIER *= -1;
 		} else if (y > 280) {
@@ -97,7 +111,7 @@ public class Bird extends JPanel {
 	 */
 	public void inGame () {
 
-		// If the bird did not hit the base
+		// If the bird did not hit the base, lower it
 		if (y < BASE_COLLISION) {
 
 			// Change and velocity
@@ -144,8 +158,6 @@ public class Bird extends JPanel {
 			g2d.transform(at);
 			g2d.drawImage(sprites[0], x, y, null);
 			g2d.setTransform(trans);
-
-			// g.drawImage(sprites[0], x, y, null);
 
 		}
 

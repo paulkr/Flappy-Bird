@@ -18,4 +18,3 @@ $ javac FlappyBird.java && java FlappyBird
 TODO:
 -----
 - [ ] Bird rotation
-- [ ] Comments + cleanup

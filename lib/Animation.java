@@ -23,6 +23,7 @@ public class Animation {
 	 */
 	public static void animate (Graphics g, BufferedImage[] sprites, int x, int y, double speed) {
 		
+		// Number of frames
 		int count = sprites.length;
 		
 		// Draw the current frame

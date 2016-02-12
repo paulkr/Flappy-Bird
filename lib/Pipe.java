@@ -5,22 +5,21 @@
  * @author  Paul Krishnamurthy
  */
 
-
 public class Pipe {
 
+	// Pipe coordinates
 	private int x = FlappyBird.WIDTH + 5;
 	private int y;
 
 	// Placement (top or bottom) of pipe
 	String location;
 
+	// Pipe constants
 	public static final int WIDTH         = 67;
 	public static final int HEIGHT        = 416;
 	public static final int PIPE_DISTANCE = 150;          // Horizontal distance between pipes
 	public static final int PIPE_SPACING  = HEIGHT + 170; // Vertical distance between pipes
-
-	private final int speed = -2;
-
+	private static final int SPEED        = -2;
 
 	// If the bird can get a point passing this pipe
 	public boolean canAwardPoint = true;
@@ -44,7 +43,7 @@ public class Pipe {
 	 * Moves the pipe
 	 */
 	public void move () {
-		x += speed;
+		x += SPEED;
 	}
 
 
@@ -71,14 +70,25 @@ public class Pipe {
 
 	}
 
+	/**
+	 * @return     Pipe's x-coordinate
+	 */
 	public int getX () {
 		return x;
 	}
 
+	/**
+	 * @return     Pipe's y-coordinate
+	 */
 	public int getY () {
 		return y;
 	}
 
+	/**
+	 * Set's pipe's y-coordinate (for bottom pipes)
+	 * 
+	 * @param newY     New y-coordinate
+	 */
 	public void setY (int newY) {
 		y = newY;
 	}

@@ -15,6 +15,7 @@ public class Texture {
 	private int x, y, width, height;
 	private Rectangle rect;
 
+
 	public Texture (BufferedImage image, int x, int y) {
 		this.image = image;
 		this.x = x;

@@ -22,7 +22,9 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 
-public class GamePanel extends JPanel implements Globals, KeyListener, MouseListener {
+import java.awt.Toolkit;
+
+public class GamePanel extends JPanel implements KeyListener, MouseListener {
 
 	private Random rand;
 	private Calendar cal;
@@ -46,19 +48,22 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 	private int gameState             = MENU;              // Game screen state
 	private boolean inStartGameState  = false;             // To show instructions scren
 	private Point clickedPoint        = new Point(-1, -1); // Store point when player clicks 
-	public static int score           = 0;                 // Current game score
-	private int pipeDistTracker       = 0;
-	private boolean scoreWasGreater   = false;
-	private String medal;
 	
-	// Constants
-	private final Bird gameBird;
-	private final boolean darkTheme;
-	private final String randomBird;
+	private boolean scoreWasGreater;
+	private String medal;
+	private  int score;
+	private int pipeDistTracker;
+	private Bird gameBird;
+	private boolean darkTheme;
+	private String randomBird;
 
-	public ArrayList<Pipe> pipes = new ArrayList<Pipe>();
+	public ArrayList<Pipe> pipes;
 
 	private Highscore highscore = new Highscore();
+
+	// Game states
+	final static int MENU = 0;
+	final static int GAME = 1;
 
 
 	public GamePanel () {
@@ -82,6 +87,29 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			System.err.println("Could not load Flappy Font!");
 			System.exit(-1);
 		}
+
+		restart();
+
+		// Input listeners
+		addKeyListener(this);
+		addMouseListener(this);
+
+	}
+
+	public void addNotify() {
+		super.addNotify();
+		requestFocus();
+		ready = true;
+	}
+
+	/**
+	 * Restarts game
+	 */
+	public void restart () {
+
+		score = 0;
+		pipeDistTracker = 0;
+		scoreWasGreater = false;
 
 		// Get current hour with Calendar
 		// If it is past noon, use the dark theme
@@ -109,15 +137,8 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 			textures.get(randomBird + "Bird3").getImage()
 		});
 
-		// Input listeners
-		addKeyListener(this);
-		addMouseListener(this);
-	}
+		pipes = new ArrayList<Pipe>();
 
-	public void addNotify() {
-		super.addNotify();
-		requestFocus();
-		ready = true;
 	}
 
 	/**
@@ -494,7 +515,7 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 				inStartGameState = true;
 			}
 
-		} else if (gameState == GAME) {
+		} else if (gameState == GAME && gameBird.isAlive()) {
 
 			if (keyCode == KeyEvent.VK_SPACE) {
 
@@ -523,37 +544,59 @@ public class GamePanel extends JPanel implements Globals, KeyListener, MouseList
 		// Save clicked point
 		clickedPoint = e.getPoint();
 
-		if (gameState == MENU || !gameBird.isAlive()) {
+		if (gameState == MENU) {
 
-			if (isTouching(textures.get("leaderboard").getRect())) {
+			if (isTouching(textures.get("playButton").getRect())) {
+				gameState = GAME;
+				inStartGameState = true;
 
+			} else if (isTouching(textures.get("leaderboard").getRect())) {
 				// Dummy message
 				JOptionPane.showMessageDialog(this, 
 					"We can't access the leaderboard right now!",
 					"Oops!",
 					JOptionPane.ERROR_MESSAGE);
 			}
-		}
 
-		if (gameState == MENU && gameBird.isAlive()) {
+			if (gameBird.isAlive()) {
 
-			if (isTouching(textures.get("playButton").getRect())) {
-					gameState = GAME;
-					inStartGameState = true;
-
-				} else if (isTouching(textures.get("rateButton").getRect())) {
+				if (isTouching(textures.get("rateButton").getRect())) {
 					Helper.openURL("http://paulkr.com"); // Open website
 				}
 
-		} else if (gameState == GAME) {
-			// Allow jump with clicks
-
-			if (inStartGameState) {
-				inStartGameState = false;
 			}
 
-			gameBird.jump();
-			audio.jump();
+		} else if (gameState == GAME) {
+
+			if (gameBird.isAlive()) {
+
+				// Allow jump with clicks
+
+				if (inStartGameState) {
+					inStartGameState = false;
+				}
+
+				gameBird.jump();
+				audio.jump();
+
+			} else {
+
+				if (isTouching(textures.get("playButton").getRect())) {
+					inStartGameState = true;
+					gameState = GAME;
+					restart();
+					gameBird.setGameStartPos();
+
+				} else if (isTouching(textures.get("leaderboard").getRect())) {
+					// Dummy message
+					JOptionPane.showMessageDialog(this, 
+						"We can't access the leaderboard right now!",
+						"Oops!",
+						JOptionPane.ERROR_MESSAGE);
+				}
+
+			}
+			
 		}
 
 	}

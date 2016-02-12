@@ -60,7 +60,7 @@ public class Bird extends JPanel {
 	/**
 	 * Set new coordinates when starting games
 	 */
-	public void setGameStartPos() {
+	public void setGameStartPos () {
 		x = STARTING_BIRD_X;
 		y = STARTING_BIRD_Y;
 	}

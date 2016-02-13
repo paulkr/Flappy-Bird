@@ -8,11 +8,10 @@
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 
 public class Bird extends JPanel {
 
+	// Bird attributes
 	public String color;
 	private int x, y;
 	private boolean isAlive = true;
@@ -25,12 +24,12 @@ public class Bird extends JPanel {
 	private final int SHIFT           = 10;
 	private final int STARTING_BIRD_X = 90;
 	private final int STARTING_BIRD_Y = 343;
-	private final int FALL_SPEED      = 3;
 	
 	// Physics variables
 	private double velocity           = 0;
 	private double gravity            = .41;
 	private double delay              = 0;
+	private double rotation           = 0;
 
 	// Bird sprites
 	private BufferedImage[] sprites;
@@ -124,6 +123,8 @@ public class Bird extends JPanel {
 			y += (int) velocity;
 
 		} else {
+
+			// Play audio and set state to dead
 			GamePanel.audio.hit();
 			isAlive = false;
 		}
@@ -135,31 +136,24 @@ public class Bird extends JPanel {
 	 */
 	public void renderBird (Graphics g) {
 
-		Graphics2D g2d = (Graphics2D) g;
+		// Calculate angle to rotate bird based on y-velocity
+		rotation = ((90 * (velocity + 25) / 25) - 90) * Math.PI / 180;
 
-		if (isAlive()) {
+		// Handle rotation offset
+		rotation = rotation > Math.PI / 2 ? Math.PI / 2 : rotation;
 
-			// Create bird animation
-			Animation.animate(g, sprites, x, y, .09);
+		if (!isAlive()) {
 
-		} else {
-
+			// Drop bird on death
 			if (y < BASE_COLLISION - 10) {
 				velocity += gravity;
 				y += (int) velocity;
 			}
 
-			// Rotation
-
-			AffineTransform trans = g2d.getTransform();
-
-			AffineTransform at = new AffineTransform();
-			at.rotate(.9, x+25, y+25);
-			g2d.transform(at);
-			g2d.drawImage(sprites[0], x, y, null);
-			g2d.setTransform(trans);
-
 		}
+
+		// Create bird animation and pass in rotation angle
+		Animation.animate(g, sprites, x, y, .09, rotation);
 
 	}
 

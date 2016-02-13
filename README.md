@@ -13,8 +13,3 @@ Build & Run
 $ cd lib
 $ javac FlappyBird.java && java FlappyBird
 ```
-
-
-TODO:
------
-- [ ] Bird rotation

@@ -20,7 +20,6 @@ import java.awt.image.BufferedImage;
 import java.util.Calendar;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
-import java.awt.geom.AffineTransform;
 
 public class GamePanel extends JPanel implements KeyListener, MouseListener {
 
@@ -106,7 +105,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener {
 	}
 
 	/**
-	 * Restarts game
+	 * Restarts game by resetting game variables
 	 */
 	public void restart () {
 

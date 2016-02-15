@@ -34,6 +34,7 @@ public class Bird extends JPanel {
 	// Bird sprites
 	private BufferedImage[] sprites;
 
+
 	public Bird (String color, int x, int y, BufferedImage[] s) {
 		this.color = color;
 		this.x = x;
@@ -138,6 +139,9 @@ public class Bird extends JPanel {
 
 		// Calculate angle to rotate bird based on y-velocity
 		rotation = ((90 * (velocity + 25) / 25) - 90) * Math.PI / 180;
+		
+		// Divide for clean jump
+		rotation /= 2;
 
 		// Handle rotation offset
 		rotation = rotation > Math.PI / 2 ? Math.PI / 2 : rotation;

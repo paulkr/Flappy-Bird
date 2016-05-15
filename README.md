@@ -1,10 +1,9 @@
 Flappy-Bird
 ===========
 
-A flappy bird clone written in Java.
+A flappy bird clone written in Java, for the ICS4U Simple Game Assignment.
 
-![demo](https://raw.githubusercontent.com/paulkr/Flappy-Bird/master/demo.png)
-
+<img src="https://raw.githubusercontent.com/paulkr/Flappy-Bird/master/demo.png" width="500" />
 
 Build & Run
 -----------

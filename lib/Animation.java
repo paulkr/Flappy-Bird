@@ -43,9 +43,9 @@ public class Animation {
 		g2d.setTransform(trans);
 		
 		// Switch animation frames
-        if (currentFrame >= count - 1) {
-            currentFrame = 0;
-        } else currentFrame += speed;
+    if (currentFrame >= count - 1) {
+        currentFrame = 0;
+    } else currentFrame += speed;
 
 	}
 
